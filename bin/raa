@@ -96,33 +96,31 @@ _raa_activate () {
   # action methods
 
   get_version_and_command_from_params_and_version_files () {
-    # check for explicit version parameter
+    # get explicit version parameter
     if [[ $1 =~ ^@ ]]; then
       SOURCE="from command line"
       VERSION=$1; shift
       VERSION=${VERSION:1}
     fi
-
-    # set command parameter
+    # get command parameter
     COMMAND="$@"
 
-    # if no version parameter, search pwd and its parents for a .ruby-version file
+    # fallback to searching pwd and its parents for a .ruby-version file
     search_pwd_and_parents_for "$VERSION_FILE"
     [ -n "$VERSION" ] || read_version_from_file "$PWD_AND_PARENTS_SEARCH_RESULT"
 
-    # fall back to $HOME/.ruby-version, if present
+    # fallback to the $HOME/.ruby-version, if present
     [ -n "$VERSION" ] || read_version_from_file "$HOME/$VERSION_FILE"
 
-    # validate that a rubie was requested
+    # validate that a rubie version was requested
     [ ! "$VERSION" ] && warn "Specify a ruby version to activate." && return
   }
 
   set_env_to_requested_version () {
     if [[ "$VERSION" == "system" ]]; then
       reset_to_system_env
-    else
-      # only reset if the requested is different from the current
-      if [ "$VERSION" != "$RAA_RUBY_VERSION" ]; then reset_to_version_env; fi;
+    elif [ "$VERSION" != "$RAA_RUBY_VERSION" ]; then
+      reset_to_version_env
     fi
   }
 
