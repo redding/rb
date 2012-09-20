@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 
-_ra_activate() {
-
-  # settings
-
-  local RA_ROOT="$HOME/.ra"
-  local RA_RUBIES_ROOT="$RA_ROOT/rubies"
-  local RA_VERSION_FILE=".ruby-version"
-
+_ra_activate () {
 
   # locals
+
+  local RA_ROOT="$HOME/.ra"
+  local RUBIES_ROOT="$RA_ROOT/rubies"
+  local VERSION_FILE=".ruby-version"
 
   local VERSION SOURCE COMMAND
   local MSG PWD_AND_PARENTS_SEARCH_RESULT
@@ -20,11 +17,26 @@ _ra_activate() {
   warn () { echo -e "$1" >&2; }
   info () { warn "$1"; }
 
-  read_version_from_file() {
+  set_env_var () { export $1="$2"; }
+  unset_env_var () { unset $1; }
+
+  path_remove ()  {
+    set_variable PATH "`echo $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`";
+  }
+
+  path_append ()  {
+    path_remove $1; set_env_var PATH "$PATH:$1";
+  }
+
+  path_prepend () {
+    path_remove $1; set_env_var PATH "$1:$PATH";
+  }
+
+  read_version_from_file () {
     if [ -f "$1" ]; then SOURCE="from $1"; VERSION=`head -n 1 $1`; fi;
   }
 
-  search_pwd_and_parents_for() {
+  search_pwd_and_parents_for () {
     path_slashes=${PWD//[^\/]/}
     num_path_dirs="${#path_slashes}"
     path="$PWD"
@@ -42,10 +54,46 @@ _ra_activate() {
     done
   }
 
+  deactivate_current_version_env () {
+    if [ $RA_RUBY_VERSION ]; then
+      path_remove "$RUBIES_ROOT/$RA_RUBY_VERSION/bin"
+      path_remove "$RUBIES_ROOT/$RA_RUBY_VERSION/lib/ruby/gems/bin"
+      unset_env_var GEM_PATH
+      unset_env_var GEM_HOME
+      unset_env_var RA_RUBY_VERSION
+    fi
+  }
+
+  activate_new_version_env () {
+    set_env_var RA_RUBY_VERSION "$VERSION"
+    set_env_var GEM_HOME "$RUBIES_ROOT/$RA_RUBY_VERSION/lib/ruby/gems"
+    set_env_var GEM_PATH "$RUBIES_ROOT/$RA_RUBY_VERSION/lib/ruby/gems"
+    path_prepend "$RUBIES_ROOT/$RA_RUBY_VERSION/lib/ruby/gems/bin"
+    path_prepend "$RUBIES_ROOT/$RA_RUBY_VERSION/bin"
+  }
+
+  reset_to_version_env () {
+    if [ ! -e $RUBIES_ROOT/$VERSION ]; then
+      warn "Rubie $VERSION was requested, but is not installed. ($SOURCE)"
+      warn "If you have ruby-build installed, you can install the requested version like this:\n"
+      warn "ruby-build $VERSION \$HOME/.ra/rubies/$VERSION"
+      return 1
+    fi
+
+    deactivate_current_version_env
+    activate_new_version_env
+    MSG="Activated $VERSION"
+  }
+
+  reset_to_system_env () {
+    deactivate_current_version_env
+    MSG="Activated system Ruby."
+  }
+
 
   # action methods
 
-  set_version_and_command_from_params_and_version_files() {
+  get_version_and_command_from_params_and_version_files () {
     # check for explicit version parameter
     if [[ $1 =~ ^@ ]]; then
       SOURCE="from command line"
@@ -57,18 +105,32 @@ _ra_activate() {
     COMMAND="$@"
 
     # if no version parameter, search pwd and its parents for a .ruby-version file
-    search_pwd_and_parents_for "$RA_VERSION_FILE"
+    search_pwd_and_parents_for "$VERSION_FILE"
     [ -n "$VERSION" ] || read_version_from_file "$PWD_AND_PARENTS_SEARCH_RESULT"
 
-
     # fall back to $HOME/.ruby-version, if present
-    [ -n "$VERSION" ] || read_version_from_file "$HOME/$RA_VERSION_FILE"
+    [ -n "$VERSION" ] || read_version_from_file "$HOME/$VERSION_FILE"
 
-    # validate
+    # validate that a rubie was requested
     [ ! "$VERSION" ] && warn "Specify a ruby version to activate." && return
   }
 
-  set_version_and_command_from_params_and_version_files
+  set_env_to_requested_version () {
+    echo "$VERSION"
+    if [[ "$VERSION" == "system" ]]; then
+      reset_to_system_env
+    else
+      # only reset if the requested is different from the current
+      if [ "$VERSION" != "$RA_RUBY_VERSION" ]; then reset_to_version_env; fi;
+    fi
+  }
 
-  echo "$VERSION ($SOURCE): $COMMAND"
+  get_version_and_command_from_params_and_version_files "$@"
+  set_env_to_requested_version
+
+  # output the info msg, if present
+  if [ ! -z "$MSG" ]; then info "$MSG ($SOURCE)"; fi;
+
+  # execute the command, if given
+  [ -n "$COMMAND" ] && eval $COMMAND
 }
