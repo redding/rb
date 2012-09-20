@@ -1,29 +1,29 @@
-# ra
+# raa: The Ruby Auto Activator
 
-*a tool to manage multiple ruby installations for bash shells.*
+~~ Minimally Manage Multiple Rubies ~~
 
 ```
-$ ra @1.8.7 ruby -v  # execute using 1.8.7 rubie
-$ ra @1.9.3          # set shell to 1.9.3 rubie
-$ ra ruby -v         # execute using current `.ruby-version` rubie
-$ ra                 # set shell to current `.ruby-version` rubie
+$ raa @1.8.7 ruby -v  # execute using 1.8.7 rubie
+$ raa @1.9.3          # set shell to 1.9.3 rubie
+$ raa ruby -v         # execute using current `.ruby-version` rubie
+$ raa                 # set shell to current `.ruby-version` rubie
 ```
 
 Add this to your shell startup script to initialize.  This installs some bash tab completions.
 
 ```bash
-eval "$(ra --init)"
+eval "$(raa --init)"
 ```
 
 There is an **automatic mode** that activates the current .ruby-version rubie as you change directories.  This involves overriding `cd` and is **optional**.  To enable, add the `--auto` flag to your shell startup script.
 
 ```bash
-eval "$(ra --init --auto)"
+eval "$(raa --init --auto)"
 ```
 
 ## What It Does
 
-**modifies env vars**: ra implements the ruby switching by modifying the `PATH`, `GEM_HOME` and `GEM_PATH` environment variables.
+**modifies env vars**: activates rubies modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.
 
 **explicit invocation**: execute commands using a specific rubie from the command line
 
@@ -33,61 +33,57 @@ eval "$(ra --init --auto)"
 
 **simple, focused**: doesn't do much other than change the variables mentioned above.
 
-No non-bash shells, no gemsets, no installed rubie handling, etc.
-
-It does one thing, well.
-
 ## Install
 
 Download/clone the source, run the install script
 
 ```
-$ git clone git://github.com/rootedwest/ra.git
-$ cd ra
+$ git clone git://github.com/rootedwest/raa.git
+$ cd raa
 $ ./install.sh
 ```
 
 (optional) Add initialization to your shell startup script
 
 ```bash
-eval "$(ra --init)"
+eval "$(raa --init)"
 ```
 
 If you want automatic handling, add the `--auto` flag
 
 ```bash
-eval "$(ra --init --auto)"
+eval "$(raa --init --auto)"
 ```
 
 ### Install Rubies
 
-An installed rubie should live in `$HOME/.ra/rubies/$VERSION`.  Install rubies any way you prefer; [ruby-build](https://github.com/sstephenson/ruby-build) is recommended.
+An installed rubie should live in `$HOME/.raa/rubies/$VERSION`.  Install rubies any way you prefer; [ruby-build](https://github.com/sstephenson/ruby-build) is recommended.
 
 ## Using With `.ruby-version` Files
 
-If no explicit @<verion> parameter is specified, ra will look for the version in a file named `.ruby-version` in your current directory and its parent directories, followed by your home directory
+If no explicit @<verion> parameter is specified, it will look for the version in a file named `.ruby-version` in your current directory and its parent directories, followed by your home directory
 
 The `.ruby-version` files are expected to contain nothing but the rubie version requested
 
 ```
 $ echo "1.9.3-p0" > $HOME/.ruby-version
-$ ra ruby -v    # will use 1.9.3-p0
+$ raa ruby -v    # will use 1.9.3-p0
 ```
 
 If the `@<version>` parameter is given, it will always override whatever versions are specified in available `.ruby-version` files.
 
 ## Using With Pow
 
-Add a `.ruby-version` file to your project, as well as a `.powrc` file containing the following line (this will make Pow start up your project using ra using the rubie in the version file):
+Add a `.ruby-version` file to your project, as well as a `.powrc` file containing the following line (this will make Pow start up your project with the rubie in the version file activated):
 
 ```bash
-source ra
+source raa
 ```
 
 ## Using The System Rubie
 
 ```
-$ ra @system
+$ raa @system
 ```
 
 ## Uninstall
@@ -95,16 +91,16 @@ $ ra @system
 Delete the executable
 
 ```
-$ rm /usr/local/bin/ra
+$ rm /usr/local/bin/raa
 ```
 
-Delete the `$HOME/.ra` dir (this will delete all installed rubies including all of their installed gems).
+Delete the `$HOME/.raa` dir (this will delete all installed rubies including all of their installed gems).
 
 ```
-$ rm -rf $HOME/.ra
+$ rm -rf $HOME/.raa
 ```
 
-Finally, remove the `eval "$(ra --init)"` line from your shell startup script and reload your shell.
+Finally, remove the `eval "$(raa --init)"` line from your shell startup script and reload your shell.
 
 ## Contributing
 

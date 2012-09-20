@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-_ra_activate () {
+RAA_RELEASE="20120920"
+
+_raa_activate () {
 
   # locals
 
-  local RA_ROOT="$HOME/.ra"
-  local RUBIES_ROOT="$RA_ROOT/rubies"
+  local RAA_ROOT="$HOME/.raa"
+  local RUBIES_ROOT="$RAA_ROOT/rubies"
   local VERSION_FILE=".ruby-version"
 
   local VERSION SOURCE COMMAND
@@ -55,9 +57,9 @@ _ra_activate () {
   }
 
   deactivate_current_version_env () {
-    if [ $RA_RUBY_VERSION ]; then
-      path_remove "$RUBIES_ROOT/$RA_RUBY_VERSION/bin"
-      path_remove "$RUBIES_ROOT/$RA_RUBY_VERSION/lib/ruby/gems/bin"
+    if [ $RAA_RUBY_VERSION ]; then
+      path_remove "$RUBIES_ROOT/$RAA_RUBY_VERSION/bin"
+      path_remove "$RUBIES_ROOT/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
       unset_env_var GEM_PATH
       unset_env_var GEM_HOME
       unset_env_var RA_RUBY_VERSION
@@ -66,17 +68,17 @@ _ra_activate () {
 
   activate_new_version_env () {
     set_env_var RA_RUBY_VERSION "$VERSION"
-    set_env_var GEM_HOME "$RUBIES_ROOT/$RA_RUBY_VERSION/lib/ruby/gems"
-    set_env_var GEM_PATH "$RUBIES_ROOT/$RA_RUBY_VERSION/lib/ruby/gems"
-    path_prepend "$RUBIES_ROOT/$RA_RUBY_VERSION/lib/ruby/gems/bin"
-    path_prepend "$RUBIES_ROOT/$RA_RUBY_VERSION/bin"
+    set_env_var GEM_HOME "$RUBIES_ROOT/$RAA_RUBY_VERSION/lib/ruby/gems"
+    set_env_var GEM_PATH "$RUBIES_ROOT/$RAA_RUBY_VERSION/lib/ruby/gems"
+    path_prepend "$RUBIES_ROOT/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
+    path_prepend "$RUBIES_ROOT/$RAA_RUBY_VERSION/bin"
   }
 
   reset_to_version_env () {
     if [ ! -e $RUBIES_ROOT/$VERSION ]; then
-      warn "Rubie $VERSION was requested, but is not installed. ($SOURCE)"
-      warn "If you have ruby-build installed, you can install the requested version like this:\n"
-      warn "ruby-build $VERSION \$HOME/.ra/rubies/$VERSION"
+      warn "$VERSION was requested ($SOURCE)."
+      warn "It is not installed - install it with ruby-build like this:\n"
+      warn "ruby-build $VERSION $RUBIES_ROOT/$VERSION"
       return 1
     fi
 
@@ -116,12 +118,11 @@ _ra_activate () {
   }
 
   set_env_to_requested_version () {
-    echo "$VERSION"
     if [[ "$VERSION" == "system" ]]; then
       reset_to_system_env
     else
       # only reset if the requested is different from the current
-      if [ "$VERSION" != "$RA_RUBY_VERSION" ]; then reset_to_version_env; fi;
+      if [ "$VERSION" != "$RAA_RUBY_VERSION" ]; then reset_to_version_env; fi;
     fi
   }
 
@@ -134,3 +135,28 @@ _ra_activate () {
   # execute the command, if given
   [ -n "$COMMAND" ] && eval $COMMAND
 }
+
+# CLI
+
+if [ "$1" = "--help" ]; then
+
+  cat <<USAGE
+raa: The Ruby Auto Activator (release $RAA_RELEASE)
+~~ Minimally Manage Multiple Rubies ~~
+
+  Usage:
+    raa [@<version>] [command]"
+    raa --init [--auto]"
+    raa --help"
+    raa --version
+
+  More Info:
+    https://github.com/rootedwest/raa
+USAGE
+  exit 0
+
+elif [ "$1" = "--version" ]; then
+
+  echo "$RAA_RELEASE"
+
+fi
