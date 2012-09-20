@@ -1,1 +1,23 @@
 #!/usr/bin/env bash
+
+_ra_activate() {
+
+  # utility methods
+
+  # return the nearest path to a file in the pwd or its parent dirs
+  pwd_path() {
+    path_slashes=${PWD//[^\/]/}
+    num_path_dirs="${#path_slashes}"
+    path="$PWD"
+
+    for (( n=${num_path_dirs}; n>0; --n ))
+    do
+      test -e "$path/$1" && echo "$path/$1" && return
+      path="$path/.."
+    done
+  }
+
+  echo "_ra_file_version..."
+  pwd_path ".ruby-version"
+
+}
