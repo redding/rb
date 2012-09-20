@@ -67,12 +67,12 @@ _raa_activate () {
       path_remove "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
       unset_env_var GEM_PATH
       unset_env_var GEM_HOME
-      unset_env_var RA_RUBY_VERSION
+      unset_env_var RAA_RUBY_VERSION
     fi
   }
 
   activate_new_version_env () {
-    set_env_var RA_RUBY_VERSION "$VERSION"
+    set_env_var RAA_RUBY_VERSION "$VERSION"
     set_env_var GEM_HOME "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems"
     set_env_var GEM_PATH "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems"
     path_prepend "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
@@ -165,6 +165,9 @@ elif [ "$1" = "--version" ]; then
 
 elif [ "$1" = "--init" ]; then
 
+  # init code (to be run from shell startup script)
+  # ie. eval "$(raa --init)"
+
   cat <<BASH_TAB_COMPLETION
 if command -v complete >/dev/null 2>&1; then
   _raa_complete_version() {
@@ -187,4 +190,22 @@ if command -v complete >/dev/null 2>&1; then
 fi
 BASH_TAB_COMPLETION
 
+  if [ "$2" = "--auto" ]; then
+
+    # more init code - to be used in conjunction with the `--init` flag
+    # ie. eval "$(raa --init --auto)"
+    # (optional) auto mode (update ruby version as you change directories)
+
+    cat <<AUTO_MODE
+function cd() {
+  builtin cd "\$@" && _raa_activate
+}
+source raa
+AUTO_MODE
+  fi
+
+  exit 0
+
+else
+  _raa_activate $@
 fi
