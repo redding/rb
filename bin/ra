@@ -2,22 +2,64 @@
 
 _ra_activate() {
 
+  # settings
+
+  local RA_ROOT="$HOME/.ra"
+  local RA_RUBIES_ROOT="$RA_ROOT/rubies"
+  local RA_VERSION_FILE=".ruby-version"
+
+
+  # locals
+
+  local VERSION SOURCE COMMAND
+  local MSG PWD_AND_PARENTS_SEARCH_RESULT
+
+
   # utility methods
 
-  # return the nearest path to a file in the pwd or its parent dirs
-  pwd_path() {
+  read_version_from_file() {
+    if [ -f "$1" ]; then SOURCE="from $1"; VERSION=`head -n 1 $1`; fi;
+  }
+
+  search_pwd_and_parents_for() {
     path_slashes=${PWD//[^\/]/}
     num_path_dirs="${#path_slashes}"
     path="$PWD"
 
-    for (( n=${num_path_dirs}; n>0; --n ))
-    do
-      test -e "$path/$1" && echo "$path/$1" && return
+    for (( n=${num_path_dirs}; n>0; --n )) do
+      test -e "$path/$1" &&
+        ORIG_OLDPWD="$OLDPWD" &&
+        pushd "$path" > /dev/null &&
+        PWD_AND_PARENTS_SEARCH_RESULT="$PWD/$1" &&
+        popd > /dev/null &&
+        OLDPWD="$ORIG_OLDPWD" &&
+        return
+
       path="$path/.."
     done
   }
 
-  echo "_ra_file_version..."
-  pwd_path ".ruby-version"
+  set_version_and_command_from_params_and_version_files() {
+    # check for explicit version parameter
+    if [[ $1 =~ ^@ ]]; then
+      SOURCE="from command line"
+      VERSION=$1; shift
+      VERSION=${VERSION:1}
+    fi
 
+    # set command parameter
+    COMMAND="$@"
+
+    # if no version parameter, search pwd and its parents for a .ruby-version file
+    search_pwd_and_parents_for "$RA_VERSION_FILE"
+    [ -n "$VERSION" ] || read_version_from_file "$PWD_AND_PARENTS_SEARCH_RESULT"
+
+
+    # fall back to $HOME/.ruby-version, if present
+    [ -n "$VERSION" ] || read_version_from_file "$HOME/$RA_VERSION_FILE"
+  }
+
+  set_version_and_command_from_params_and_version_files
+
+  echo "$VERSION ($SOURCE): $COMMAND"
 }
