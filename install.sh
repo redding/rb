@@ -17,4 +17,4 @@ for file in bin/*; do
 done
 
 # done!
-echo "Installed ra at ${BIN_PATH}"
+echo "Installed at ${BIN_PATH}"
