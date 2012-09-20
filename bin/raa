@@ -28,7 +28,7 @@ _raa_activate () {
   unset_env_var () { unset $1; }
 
   path_remove ()  {
-    set_variable PATH "`echo $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`";
+    set_env_var PATH "`echo $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`";
   }
 
   path_append ()  {
@@ -62,13 +62,11 @@ _raa_activate () {
   }
 
   deactivate_current_version_env () {
-    if [ $RAA_RUBY_VERSION ]; then
-      path_remove "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/bin"
-      path_remove "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
-      unset_env_var GEM_PATH
-      unset_env_var GEM_HOME
-      unset_env_var RAA_RUBY_VERSION
-    fi
+    path_remove "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/bin"
+    path_remove "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
+    unset_env_var GEM_PATH
+    unset_env_var GEM_HOME
+    set_env_var RAA_RUBY_VERSION "$VERSION"
   }
 
   activate_new_version_env () {
@@ -118,14 +116,16 @@ _raa_activate () {
     [ -n "$VERSION" ] || read_version_from_file "$HOME/$VERSION_FILE"
 
     # fallback to the system version
-    VERSION="system"; SOURCE="no version requested"
+    [ -n "$VERSION" ] || VERSION="system" && SOURCE="no version requested"
   }
 
   set_env_to_requested_version () {
-    if [[ "$VERSION" == "system" ]]; then
-      reset_to_system_env
-    elif [ "$VERSION" != "$RAA_RUBY_VERSION" ]; then
-      reset_to_version_env
+    if [ "$VERSION" != "$RAA_RUBY_VERSION" ]; then
+      if [[ "$VERSION" == "system" ]]; then
+        reset_to_system_env
+      else
+        reset_to_version_env
+      fi
     fi
   }
 
