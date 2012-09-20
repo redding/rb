@@ -94,7 +94,7 @@ _raa_activate () {
 
   reset_to_system_env () {
     deactivate_current_version_env
-    MSG="Activated system Ruby."
+    MSG="Activated system `ruby -v`"
   }
 
 
@@ -117,8 +117,8 @@ _raa_activate () {
     # fallback to the $HOME/.ruby-version, if present
     [ -n "$VERSION" ] || read_version_from_file "$HOME/$VERSION_FILE"
 
-    # validate that a rubie version was requested
-    [ ! "$VERSION" ] && warn "Specify a ruby version to activate." && return
+    # fallback to the system version
+    VERSION="system"; SOURCE="no version requested"
   }
 
   set_env_to_requested_version () {
