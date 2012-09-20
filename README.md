@@ -23,15 +23,15 @@ eval "$(raa --init --auto)"
 
 ## What It Does
 
-**modifies env vars**: activates rubies modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.
+**modifies env vars**: activates rubies by modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.
 
-**explicit invocation**: execute commands using a specific rubie from the command line
+**explicit invocation**: executes commands using a specific rubie from the command line
 
 **.ruby-version files**: supports specifying the rubie versions with `.ruby-version` files.
 
-**tab completions**: tab complete version string parameters
+**tab completions**: tab completes version string parameters
 
-**simple, focused**: doesn't do much other than change the variables mentioned above.
+**simple, focused**: it activates rubies - well.
 
 ## Install
 
@@ -59,7 +59,25 @@ eval "$(raa --init --auto)"
 
 An installed rubie should live in `$HOME/.raa/rubies/$VERSION`.  Install rubies any way you prefer; [ruby-build](https://github.com/sstephenson/ruby-build) is recommended.
 
-## Using With `.ruby-version` Files
+## Usage
+
+```
+$ raa --help
+raa: The Ruby Auto Activator (release ...)
+~~ Minimally Manage Multiple Rubies ~~
+
+  Usage:
+    raa [@<version>] [command]"
+    raa --init [--auto]"
+    raa --help"
+    raa --version
+
+  More Info:
+    https://github.com/rootedwest/raa
+
+```
+
+### Using With `.ruby-version` Files
 
 If no explicit @<verion> parameter is specified, it will look for the version in a file named `.ruby-version` in your current directory and its parent directories, followed by your home directory
 
@@ -72,7 +90,7 @@ $ raa ruby -v    # will use 1.9.3-p0
 
 If the `@<version>` parameter is given, it will always override whatever versions are specified in available `.ruby-version` files.
 
-## Using With Pow
+### Using With Pow
 
 Add a `.ruby-version` file to your project, as well as a `.powrc` file containing the following line (this will make Pow start up your project with the rubie in the version file activated):
 
@@ -80,7 +98,7 @@ Add a `.ruby-version` file to your project, as well as a `.powrc` file containin
 source raa
 ```
 
-## Using The System Rubie
+### Using The System Rubie
 
 ```
 $ raa @system
