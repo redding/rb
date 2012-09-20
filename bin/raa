@@ -2,6 +2,11 @@
 
 RAA_RELEASE="20120920"
 
+# Env
+
+RAA_ROOT="$HOME/.raa"
+RAA_RUBIES_DIR="rubies"
+
 _raa_activate () {
 
   # locals
@@ -58,8 +63,8 @@ _raa_activate () {
 
   deactivate_current_version_env () {
     if [ $RAA_RUBY_VERSION ]; then
-      path_remove "$RUBIES_ROOT/$RAA_RUBY_VERSION/bin"
-      path_remove "$RUBIES_ROOT/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
+      path_remove "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/bin"
+      path_remove "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
       unset_env_var GEM_PATH
       unset_env_var GEM_HOME
       unset_env_var RA_RUBY_VERSION
@@ -68,17 +73,17 @@ _raa_activate () {
 
   activate_new_version_env () {
     set_env_var RA_RUBY_VERSION "$VERSION"
-    set_env_var GEM_HOME "$RUBIES_ROOT/$RAA_RUBY_VERSION/lib/ruby/gems"
-    set_env_var GEM_PATH "$RUBIES_ROOT/$RAA_RUBY_VERSION/lib/ruby/gems"
-    path_prepend "$RUBIES_ROOT/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
-    path_prepend "$RUBIES_ROOT/$RAA_RUBY_VERSION/bin"
+    set_env_var GEM_HOME "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems"
+    set_env_var GEM_PATH "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems"
+    path_prepend "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
+    path_prepend "$RAA_ROOT/$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/bin"
   }
 
   reset_to_version_env () {
     if [ ! -e $RUBIES_ROOT/$VERSION ]; then
       warn "$VERSION was requested ($SOURCE)."
       warn "It is not installed - install it with ruby-build like this:\n"
-      warn "ruby-build $VERSION $RUBIES_ROOT/$VERSION"
+      warn "ruby-build $VERSION $RAA_ROOT/$RAA_RUBIES_DIR/$VERSION"
       return 1
     fi
 
@@ -156,5 +161,30 @@ USAGE
 elif [ "$1" = "--version" ]; then
 
   echo "$RAA_RELEASE"
+  exit 0
+
+elif [ "$1" = "--init" ]; then
+
+  cat <<BASH_TAB_COMPLETION
+if command -v complete >/dev/null 2>&1; then
+  _raa_complete_version() {
+    if [ -d "$RAA_ROOT/$RAA_RUBIES_DIR" ]; then
+      cur="\${COMP_WORDS[COMP_CWORD]}"
+      opts=\$(\\ls -1 $RAA_ROOT/$RAA_RUBIES_DIR | sed -e "s/^/@/")
+
+      if [[ \$COMP_CWORD == 1 ]]; then
+        COMPREPLY=( \$(compgen -W "\${opts} @system --init --help --version" -- \${cur}) )
+        return 0
+      fi
+
+      if [[ \$COMP_CWORD == 2 ]]; then
+        COMPREPLY=( \$(compgen -W "--auto" -- \${cur}) )
+        return 0
+      fi
+    fi
+  }
+  complete -o nospace -F _raa_complete_version raa
+fi
+BASH_TAB_COMPLETION
 
 fi
