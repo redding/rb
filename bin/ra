@@ -17,6 +17,9 @@ _ra_activate() {
 
   # utility methods
 
+  warn () { echo -e "$1" >&2; }
+  info () { warn "$1"; }
+
   read_version_from_file() {
     if [ -f "$1" ]; then SOURCE="from $1"; VERSION=`head -n 1 $1`; fi;
   }
@@ -39,6 +42,9 @@ _ra_activate() {
     done
   }
 
+
+  # action methods
+
   set_version_and_command_from_params_and_version_files() {
     # check for explicit version parameter
     if [[ $1 =~ ^@ ]]; then
@@ -57,6 +63,9 @@ _ra_activate() {
 
     # fall back to $HOME/.ruby-version, if present
     [ -n "$VERSION" ] || read_version_from_file "$HOME/$RA_VERSION_FILE"
+
+    # validate
+    [ ! "$VERSION" ] && warn "Specify a ruby version to activate." && return
   }
 
   set_version_and_command_from_params_and_version_files

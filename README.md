@@ -39,16 +39,11 @@ It does one thing, well.
 
 ## Install
 
-Download/clone the source
+Download/clone the source, run the install script
 
 ```
 $ git clone git://github.com/rootedwest/ra.git
 $ cd ra
-```
-
-Copy the `ra` executable to `/usr/local/bin` (specify an alternate location using the `PREFIX` env var).  Be sure `PREFIX` is in your `$PATH`.
-
-```
 $ ./install.sh
 ```
 
