@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-RAA_RELEASE="20120920"
+RB_RELEASE="20120920"
 
 # Env
 
-[ -n "$RAA_RUBIES_DIR" ]   || RAA_RUBIES_DIR="$HOME/.rubies"
-[ -n "$RAA_VERSION_FILE" ] || RAA_VERSION_FILE=".ruby-version"
+[ -n "$RB_RUBIES_DIR" ]   || RB_RUBIES_DIR="$HOME/.rubies"
+[ -n "$RB_VERSION_FILE" ] || RB_VERSION_FILE=".ruby-version"
 
-_raa_activate () {
+_rb_activate () {
 
   # locals
 
@@ -53,28 +53,28 @@ _raa_activate () {
   }
 
   deactivate_current_version_env () {
-    path_remove "$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/bin"
-    path_remove "$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
+    path_remove "$RB_RUBIES_DIR/$RB_RUBY_VERSION/bin"
+    path_remove "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems/bin"
     unset_env_var GEM_PATH
     unset_env_var GEM_HOME
-    set_env_var RAA_RUBY_VERSION "$VERSION"
-    set_env_var RAA_RUBY_SOURCE "$SOURCE"
+    set_env_var RB_RUBY_VERSION "$VERSION"
+    set_env_var RB_RUBY_SOURCE "$SOURCE"
   }
 
   activate_new_version_env () {
-    set_env_var RAA_RUBY_SOURCE "$SOURCE"
-    set_env_var RAA_RUBY_VERSION "$VERSION"
-    set_env_var GEM_HOME "$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems"
-    set_env_var GEM_PATH "$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems"
-    path_prepend "$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/lib/ruby/gems/bin"
-    path_prepend "$RAA_RUBIES_DIR/$RAA_RUBY_VERSION/bin"
+    set_env_var RB_RUBY_SOURCE "$SOURCE"
+    set_env_var RB_RUBY_VERSION "$VERSION"
+    set_env_var GEM_HOME "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems"
+    set_env_var GEM_PATH "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems"
+    path_prepend "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems/bin"
+    path_prepend "$RB_RUBIES_DIR/$RB_RUBY_VERSION/bin"
   }
 
   reset_to_version_env () {
-    if [ ! -e "$RAA_RUBIES_DIR/$VERSION" ]; then
+    if [ ! -e "$RB_RUBIES_DIR/$VERSION" ]; then
       warn "$VERSION was requested ($SOURCE)."
       warn "It is not installed - install it with ruby-build like this:\n"
-      warn "ruby-build $VERSION $RAA_RUBIES_DIR/$VERSION"
+      warn "ruby-build $VERSION $RB_RUBIES_DIR/$VERSION"
       return 1
     fi
 
@@ -109,18 +109,18 @@ _raa_activate () {
     COMMAND="$@"
 
     # fallback to searching pwd and its parents for a .ruby-version file
-    search_pwd_and_parents_for "$RAA_VERSION_FILE"
+    search_pwd_and_parents_for "$RB_VERSION_FILE"
     [ -n "$VERSION" ] || read_version_from_file "$PWD_AND_PARENTS_SEARCH_RESULT"
 
     # fallback to the $HOME/.ruby-version, if present
-    [ -n "$VERSION" ] || read_version_from_file "$HOME/$RAA_VERSION_FILE"
+    [ -n "$VERSION" ] || read_version_from_file "$HOME/$RB_VERSION_FILE"
 
     # fallback to the system version
     [ -n "$VERSION" ] || read_version_as_system
   }
 
   set_env_to_requested_version () {
-    if [ "$SOURCE" != "$RAA_RUBY_SOURCE" ] || [ -n "$COMMAND" ]; then
+    if [ "$SOURCE" != "$RB_RUBY_SOURCE" ] || [ -n "$COMMAND" ]; then
       if [[ "$VERSION" == "system" ]]; then
         reset_to_system_env
       else
@@ -144,36 +144,36 @@ _raa_activate () {
 if [ "$1" = "--help" ]; then
 
   cat <<USAGE
-raa: The Ruby Auto Activator (release $RAA_RELEASE)
-~~ Minimally Manage Multiple Rubies ~~
+The Ruby Auto Activator (release $RB_RELEASE)
+~~ Manage Multiple Rubies ~~
 
   Usage:
-    raa [@<version>] [command]"
-    raa --init [--auto]"
-    raa --help"
-    raa --version
+    rb [@<version>] [command]"
+    rb --init [--auto]"
+    rb --help"
+    rb --version
 
   More Info:
-    https://github.com/rootedwest/raa
+    https://github.com/rootedwest/rb
 USAGE
   exit 0
 
 elif [ "$1" = "--version" ]; then
 
-  echo "$RAA_RELEASE"
+  echo "$RB_RELEASE"
   exit 0
 
 elif [ "$1" = "--init" ]; then
 
   # init code (to be run from shell startup script)
-  # ie. eval "$(raa --init)"
+  # ie. eval "$(rb --init)"
 
   cat <<BASH_TAB_COMPLETION
 if command -v complete >/dev/null 2>&1; then
-  _raa_complete_version() {
-    if [ -d "$RAA_RUBIES_DIR" ]; then
+  _rb_complete_version() {
+    if [ -d "$RB_RUBIES_DIR" ]; then
       cur="\${COMP_WORDS[COMP_CWORD]}"
-      opts=\$(\\ls -1 $RAA_RUBIES_DIR | sed -e "s/^/@/")
+      opts=\$(\\ls -1 $RB_RUBIES_DIR | sed -e "s/^/@/")
 
       if [[ \$COMP_CWORD == 1 ]]; then
         COMPREPLY=( \$(compgen -W "\${opts} @system --init --help --version" -- \${cur}) )
@@ -186,26 +186,26 @@ if command -v complete >/dev/null 2>&1; then
       fi
     fi
   }
-  complete -o nospace -F _raa_complete_version raa
+  complete -o nospace -F _rb_complete_version rb
 fi
 BASH_TAB_COMPLETION
 
   if [ "$2" = "--auto" ]; then
 
     # more init code - to be used in conjunction with the `--init` flag
-    # ie. eval "$(raa --init --auto)"
+    # ie. eval "$(rb --init --auto)"
     # (optional) auto mode (update ruby version as you change directories)
 
     cat <<AUTO_MODE
 function cd() {
-  builtin cd "\$@" && _raa_activate
+  builtin cd "\$@" && _rb_activate
 }
-source raa
+source rb
 AUTO_MODE
   fi
 
   exit 0
 
 else
-  _raa_activate $@
+  _rb_activate $@
 fi
