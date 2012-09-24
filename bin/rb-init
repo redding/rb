@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+cat <<BASH_TAB_COMPLETION
+if command -v complete >/dev/null 2>&1; then
+  _rb_complete_version() {
+    if [ -d "$RB_RUBIES_DIR" ]; then
+      cur="\${COMP_WORDS[COMP_CWORD]}"
+      versions=\$(\\ls -1 $RB_RUBIES_DIR | sed -e "s/^/@/")
+      cmds=\$(\\ls -1 `which rb`/.. | grep rb-  | sed -e "s/^rb-//" | sed -e "s/*$//")
+
+      if [[ \$COMP_CWORD == 1 ]]; then
+        COMPREPLY=( \$(compgen -W "\${cmds} \${versions} @system --version" -- \${cur}) )
+        return 0
+      fi
+
+      if [[ \$COMP_CWORD == 2 ]] && [[ \${COMP_WORDS[1]} == 'init' ]]; then
+        COMPREPLY=( \$(compgen -W "--auto" -- \${cur}) )
+        return 0
+      fi
+
+      if [[ \$COMP_CWORD == 2 ]] && [[ \${COMP_WORDS[1]} == 'help' ]]; then
+        COMPREPLY=( \$(compgen -W "\${cmds}" -- \${cur}) )
+        return 0
+      fi
+    fi
+  }
+  complete -F _rb_complete_version rb
+fi
+BASH_TAB_COMPLETION
+
+if [ "$1" = "--auto" ]; then
+
+  # (optional) auto mode (update ruby version as you change directories)
+
+  cat <<AUTO_MODE
+function cd () {
+  builtin cd "\$@" && rb
+}
+AUTO_MODE
+
+fi
+
+cat <<SOURCE_RB
+source `which rb`
+SOURCE_RB

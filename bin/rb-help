@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+command="$1"
+if [ -z $command ]; then
+
+  cat <<USAGE
+The Ruby Auto Activator (release $RB_RELEASE)
+
+usage: rb [@<version>]
+       rb help [<cmd>]
+       rb init [--auto]
+       rb --version
+
+More Info:
+  https://github.com/rootedwest/rb
+USAGE
+  exit 0
+
+else
+
+  if [[ "$command" == "help" ]]; then
+
+    cat <<USAGE
+Print command usage info.
+
+usage: rb help
+       rb help [cmd]
+USAGE
+    exit 0
+
+  elif [[ "$command" == "init" ]]; then
+
+    cat <<USAGE
+Output a script to eval in the shell.
+
+usage: eval "\$(rb init)"
+       eval "\$(rb init --auto)"
+USAGE
+    exit 0
+
+  else
+    echo "rb: no such command \`$command'" >&2
+    exit 1
+  fi
+
+fi
+
