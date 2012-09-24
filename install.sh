@@ -2,19 +2,19 @@
 
 set -e
 
-# set the bin path
-if [ -z "${PREFIX}" ]; then
-  PREFIX="/usr/local"
-fi
-BIN_PATH="${PREFIX}/bin"
+RB_HOME_DIR=".rb"
 
-# make the bin path
-mkdir -p "${BIN_PATH}"
+# TODO: pull from the appropriate tag
+# clone the repo (overwriting existing, pulling from release tag)
+pushd "$HOME" > /dev/null && rm -rf "$RB_HOME_DIR" && git clone git://github.com/rootedwest/rb.git "$RB_HOME_DIR" && popd > /dev/null
 
-# copy binaries
-for file in bin/*; do
-  cp "${file}" "${BIN_PATH}"
-done
+# add the binpath
+[ -n "$PREFIX" ] || PREFIX="/usr/local"
+BIN_PATH="$PREFIX/bin"
+mkdir -p "$BIN_PATH"
+
+# link in the binary
+ln -sf "$HOME/$RB_HOME_DIR/libexec/rb" "$BIN_PATH"
 
 # done!
-echo "Installed at ${BIN_PATH}"
+echo "Installed at ${BIN_PATH}/rb"

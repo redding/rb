@@ -99,20 +99,20 @@ $ rb @system
 
 ## Uninstall
 
-Delete the executables
+Remove `rb` bin.  Remove the cloned rb source from the install.
 
 ```
 $ rm /usr/local/bin/rb
-$ rm /usr/local/bin/rb-*
+$ rm -rf ~/.rb
 ```
 
-** Optional ** Delete the `$HOME/.rubies` dir (this will delete all installed versions including all of their gems).
+Remove the `eval "$(rb init)"` line from your shell startup script and reload your shell.
+
+** Optional ** Remove the `$HOME/.rubies` dir (this will delete all installed versions including all of their gems).
 
 ```
 $ rm -rf $HOME/.rubies
 ```
-
-Finally, remove the `eval "$(rb init)"` line from your shell startup script and reload your shell.
 
 ## Contributing
 
