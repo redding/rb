@@ -74,7 +74,7 @@ _rb_activate () {
     if [[ "$VERSION" == "system" ]]; then            # system version requested, activate it
       reset_env; MSG="Activated system `ruby -v`"
     elif [ ! -e "$RB_RUBIES_DIR/$VERSION" ]; then    # requested version not installed
-        warn "$VERSION was requested ($SOURCE) but is not installed.  Install it with ruby-build like this:\n"
+        warn "$VERSION was requested ($SOURCE) but is not installed.\n\nInstall it with ruby-build:"
         warn "ruby-build $VERSION $RB_RUBIES_DIR/$VERSION"
         return 1
     else                                             # an installed version requested, activate it
