@@ -23,8 +23,6 @@ RB_RELEASE="beta1"
 
       ln -sf "$RB_HOME_DIR/libexec/rb" "$BIN_PATH"
 
->>>>>>> Stashed changes
-
 # done!
 
       echo "Installed at ${BIN_PATH}/rb"
