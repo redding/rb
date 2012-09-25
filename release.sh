@@ -1,6 +1,6 @@
 #!/bin/sh
 
-RB_RELEASE='beta1'
+RB_RELEASE='beta2'
 
 # check uncommitted changes
 
