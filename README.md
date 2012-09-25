@@ -1,34 +1,29 @@
 # rb: The Ruby Auto Activator
 
 ```
-$ rb @1.9.3 && ruby -v   # set shell to 1.9.3 install
-$ rb && ruby -v          # set shell to current `.ruby-version` install
+$ rb @1.9.3 && ruby -v                           # set process to '1.9.3' install
+$ echo 'ree' > ./.ruby-version && rb && ruby -v  # set process to current `.ruby-version` ('ree') install
+$ rb @system && ruby -v                          # set process to system install
 $ rb help
-```
-
-Add this to your shell startup script to initialize.  This installs some bash tab completions.
-
-```bash
-eval "$(rb init)"
-```
-
-There is the **auto mode** that modifies your shell session when you `cd` into a directory containing a .ruby-version file.  This involves overriding `cd` and is **optional**.  To enable, add the `--auto` flag.
-
-```bash
-eval "$(rb init --auto)"
 ```
 
 ## What It Does
 
-**modifies env vars**: activates installs by modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.  To accomplish this, it addes two functions to your shell - one for the activation script and one for the CLI.
+**modifies env vars**: activates installs by modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.  To accomplish this, it...
 
-**adds two functions to your shell**: one for the activation script and one for the CLI.  Needed to modify shell env vars above.
+**adds two functions to your shell**: one for the activation script and one for the CLI.  These are needed to modify shell env vars above.
 
 **.ruby-version files**: supports specifying installs with `.ruby-version` files.
 
-**tab completions**: tab completes version string parameters
+**auto mode**: (optional) modify your env as you `cd` into a directory containing a `.ruby-version` file.  This is accomplished by overriding `cd` and is **optional**.
 
-**simple, focused**: it activates installations - well.
+**tab completions**: version string parameters, commands, etc.
+
+**simple, focused**: it activates installed rubies.
+
+## Rubies
+
+Each installed version of ruby should live in `$HOME/.rubies/<version>`.  Install versions any way you prefer; [ruby-build](https://github.com/sstephenson/ruby-build) is recommended.
 
 ## Install
 
@@ -38,21 +33,17 @@ Open a terminal and run this command ([view source](http://git.io/rb-install)):
 $ curl -L http://git.io/rb-install | sh
 ```
 
-(optional) Add initialization to your shell startup script
+Add rb init to your shell startup script.  This installs tab completions and enables modifying the env vars.
 
 ```bash
 eval "$(rb init)"
 ```
 
-If you want automatic handling, add the `--auto` flag
+(optional) If you want automatic handling, add the `--auto` flag.  In additon to the normal init above, this overrides `cd` so your ruby version is auto updated as you change directories.  It is **optional**.
 
 ```bash
 eval "$(rb init --auto)"
 ```
-
-### Install Rubies
-
-An installed version should live in `$HOME/.rubies/$VERSION`.  Install versions any way you prefer; [ruby-build](https://github.com/sstephenson/ruby-build) is recommended.
 
 ## Usage
 
@@ -71,7 +62,7 @@ More Info:
 
 ### Using With `.ruby-version` Files
 
-If no explicit @<verion> parameter is specified, it will look for the version in a file named `.ruby-version` in your current directory and its parent directories, followed by your home directory.
+If no explicit @<verion> parameter is specified, rb will look for the version in a file named `.ruby-version` in your current directory and its parent directories, followed by your home directory.
 
 The `.ruby-version` files are expected to contain nothing but the installation requested.
 
