@@ -32,11 +32,10 @@ eval "$(rb init --auto)"
 
 ## Install
 
-Download/clone the source, run the install script
+Open a terminal and run this command ([view source](http://git.io/rb-install)):
 
 ```
-$ git clone git://github.com/rootedwest/rb.git
-$ cd rb && ./install.sh
+$ curl -L http://git.io/rb-install | sh
 ```
 
 (optional) Add initialization to your shell startup script
@@ -99,19 +98,10 @@ $ rb @system
 
 ## Uninstall
 
-Remove `rb` bin.  Remove the cloned rb source from the install.
+Open a terminal and run this command ([view source](http://git.io/rb-uninstall)):
 
 ```
-$ rm /usr/local/bin/rb
-$ rm -rf ~/.rb
-```
-
-Remove the `eval "$(rb init)"` line from your shell startup script and reload your shell.
-
-** Optional ** Remove the `$HOME/.rubies` dir (this will delete all installed versions including all of their gems).
-
-```
-$ rm -rf $HOME/.rubies
+$ curl -L http://git.io/rb-uninstall | sh
 ```
 
 ## Contributing
