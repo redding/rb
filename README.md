@@ -57,7 +57,7 @@ usage: rb [@<version>]
        rb --version
 
 More Info:
-  https://github.com/rootedwest/rb
+  https://github.com/rootedwest/rb/blob/<release>/README.md
 ```
 
 ### Using With `.ruby-version` Files
