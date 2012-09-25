@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -e
-RB_HOME_DIR=".rb"
+RB_HOME_DIR="$HOME/.rb"
 
 # remove the bin
 
@@ -11,7 +11,7 @@ RB_HOME_DIR=".rb"
 
 # remove the installed source
 
-      pushd "$HOME" > /dev/null && rm -rf "$RB_HOME_DIR" && popd > /dev/null
+      rm -rf "$RB_HOME_DIR"
 
 # done!  print out some optional removal instructions
 
