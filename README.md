@@ -52,6 +52,7 @@ $ rb help
 The Ruby Auto Activator (release <release>)
 
 usage: rb [@<version>]
+       rb -f <version_file>
        rb help [<cmd>]
        rb init [--auto]
        rb --version
@@ -71,7 +72,16 @@ $ echo "1.9.3-p0" > $HOME/.ruby-version
 $ rb && ruby -v    # will use 1.9.3-p0
 ```
 
-If the `@<version>` parameter is given, it will always override whatever versions are specified in available `.ruby-version` files.
+You can specify a ruby version file using the `-f` option.  This allows you to specify a version file to use without having to cd there first.
+
+```
+$ cd $HOME
+$ echo 'ree-1.8.7-2012.02' > /a/path/to/.ruby-version
+$ rb -f /a/path/to/.ruby-version
+$ ruby -v          # will use ree-1.8.7-2012.02
+```
+
+If the `@<version>` parameter is given, it will always override any versions specified in `.ruby-version` files.
 
 ### Using With Pow
 

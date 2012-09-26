@@ -101,8 +101,9 @@ rb () {
   else
     if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then echo "$RB_RELEASE"
     elif [ "$1" = "-h" ] || [ "$1" = "--help" ];  then eval "rb-help"
-    elif [[ $1 =~ ^@ ]]; then _rb_reset $@
-    elif [ -z $1 ];      then _rb_reset
+    elif [ "$1" = "-f" ]; then _rb_reset $2
+    elif [[ $1 =~ ^@ ]];  then _rb_reset $@
+    elif [ -z $1 ];       then _rb_reset
     else echo "rb: no such command \`$command_arg'" >&2
     fi
   fi

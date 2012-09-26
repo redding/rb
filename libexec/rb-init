@@ -9,7 +9,7 @@ if command -v complete >/dev/null 2>&1; then
       cmds=\$(\\ls -1 `which rb`/.. | grep rb-  | sed -e "s/^rb-//" | sed -e "s/*$//")
 
       if [[ \$COMP_CWORD == 1 ]]; then
-        COMPREPLY=( \$(compgen -W "\${cmds} \${versions} @system --version" -- \${cur}) )
+        COMPREPLY=( \$(compgen -W "\${cmds} \${versions} @system --version -f" -- \${cur}) )
         return 0
       fi
 
@@ -24,7 +24,7 @@ if command -v complete >/dev/null 2>&1; then
       fi
     fi
   }
-  complete -F _rb_complete_version rb
+  complete -o default -F _rb_complete_version rb
 fi
 BASH_TAB_COMPLETION
 
