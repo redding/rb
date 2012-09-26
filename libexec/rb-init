@@ -34,7 +34,7 @@ if [ "$1" = "--auto" ]; then
 
   cat <<AUTO_MODE
 function cd () {
-  builtin cd "\$@" && rb
+  builtin cd "\$@" && _rb_activate
 }
 AUTO_MODE
 

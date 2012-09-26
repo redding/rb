@@ -11,7 +11,7 @@ $ rb help
 
 **modifies env vars**: activates installs by modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.  To accomplish this, it...
 
-**adds two functions to your shell**: one for the activation script and one for the CLI.  These are needed to modify shell env vars above.
+**adds functions to your shell**: for the activation, for resetting, and for the CLI.  These are needed to modify shell env vars.
 
 **.ruby-version files**: supports specifying installs with `.ruby-version` files.
 

@@ -4,8 +4,21 @@ export RB_RELEASE="beta2"
 
 [ -n "$RB_RUBIES_DIR"   ] || export RB_RUBIES_DIR="$HOME/.rubies"
 [ -n "$RB_VERSION_FILE" ] || export RB_VERSION_FILE=".ruby-version"
-[ -n "$RB_RUBY_VERSION" ] || export RB_RUBY_VERSION="system"
-[ -n "$RB_RUBY_SOURCE"  ] || export RB_RUBY_SOURCE="system"
+[ -n "$RB_RUBY_VERSION" ] || export RB_RUBY_VERSION=""
+[ -n "$RB_RUBY_SOURCE"  ] || export RB_RUBY_SOURCE=""
+
+_rb_path_remove () {
+  export PATH="`echo $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`";
+}
+
+_rb_reset_env () {
+  _rb_path_remove "$RB_RUBIES_DIR/$RB_RUBY_VERSION/bin"
+  _rb_path_remove "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems/bin"
+  unset GEM_PATH
+  unset GEM_HOME
+  export RB_RUBY_VERSION="$1"
+  export RB_RUBY_SOURCE="$2"
+}
 
 _rb_activate () {
 
@@ -14,9 +27,7 @@ _rb_activate () {
   info () { warn "$1"; }
   set_env_var () { export $1="$2"; }
   unset_env_var () { unset $1; }
-  path_remove () { set_env_var PATH "`echo $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`"; }
-  path_append () { path_remove $1; set_env_var PATH "$PATH:$1"; }
-  path_prepend () { path_remove $1; set_env_var PATH "$1:$PATH"; }
+  path_prepend () { _rb_path_remove $1; set_env_var PATH "$1:$PATH"; }
   read_version_from_file () { if [ -f "$1" ]; then SOURCE="from $1"; VERSION=`head -n 1 $1 | sed 's/ //g'`; fi; }
   search_pwd_and_parents_for () {
     path_slashes=${PWD//[^\/]/}
@@ -34,14 +45,6 @@ _rb_activate () {
 
       path="$path/.."
     done
-  }
-  reset_env () {
-    path_remove "$RB_RUBIES_DIR/$RB_RUBY_VERSION/bin"
-    path_remove "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems/bin"
-    unset_env_var GEM_PATH
-    unset_env_var GEM_HOME
-    set_env_var RB_RUBY_SOURCE "$SOURCE"
-    set_env_var RB_RUBY_VERSION "$VERSION"
   }
   apply_version_to_env () {
     set_env_var GEM_HOME "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems"
@@ -65,24 +68,29 @@ _rb_activate () {
     read_version_from_file "$HOME/$RB_VERSION_FILE"
   fi
   if [ -z "$VERSION" ]; then        # default to the system version
-    SOURCE="system"; VERSION="system"
+    SOURCE="default"; VERSION="system"
   fi
 
   # apply the requested version, if needed
 
   if [ "$SOURCE" != "$RB_RUBY_SOURCE" ] || [ "$VERSION" != "$RB_RUBY_VERSION" ]; then
     if [[ "$VERSION" == "system" ]]; then            # system version requested, activate it
-      reset_env; MSG="Activated system `ruby -v`"
+      _rb_reset_env "$VERSION" "$SOURCE"; MSG="Activated (system) `ruby -v`"
     elif [ ! -e "$RB_RUBIES_DIR/$VERSION" ]; then    # requested version not installed
-        warn "$VERSION was requested ($SOURCE) but is not installed.\n\nInstall it with ruby-build:"
-        warn "ruby-build $VERSION $RB_RUBIES_DIR/$VERSION"
-        return 1
+      warn "$VERSION was requested ($SOURCE) but is not installed.\n\nInstall it with ruby-build:"
+      warn "ruby-build $VERSION $RB_RUBIES_DIR/$VERSION"
+      return 1
     else                                             # an installed version requested, activate it
-      reset_env; apply_version_to_env; MSG="Activated $VERSION"
+      _rb_reset_env "$VERSION" "$SOURCE"; apply_version_to_env; MSG="Activated $VERSION"
     fi
     info "$MSG ($SOURCE)"
   fi
 
+}
+
+_rb_reset () {
+  _rb_reset_env "" ""
+  _rb_activate $@
 }
 
 rb () {
@@ -93,8 +101,8 @@ rb () {
   else
     if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then echo "$RB_RELEASE"
     elif [ "$1" = "-h" ] || [ "$1" = "--help" ];  then eval "rb-help"
-    elif [[ $1 =~ ^@ ]]; then _rb_activate $@
-    elif [ -z $1 ];      then _rb_activate
+    elif [[ $1 =~ ^@ ]]; then _rb_reset $@
+    elif [ -z $1 ];      then _rb_reset
     else echo "rb: no such command \`$command_arg'" >&2
     fi
   fi
