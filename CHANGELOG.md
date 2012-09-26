@@ -2,6 +2,7 @@
 
 ## (next release)
 
+* remove all whitespace when reading version string from files (#16)
 * added a changelog (#15)
 
 ## beta2

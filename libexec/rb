@@ -17,7 +17,7 @@ _rb_activate () {
   path_remove () { set_env_var PATH "`echo $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`"; }
   path_append () { path_remove $1; set_env_var PATH "$PATH:$1"; }
   path_prepend () { path_remove $1; set_env_var PATH "$1:$PATH"; }
-  read_version_from_file () { if [ -f "$1" ]; then SOURCE="from $1"; VERSION=`head -n 1 $1`; fi; }
+  read_version_from_file () { if [ -f "$1" ]; then SOURCE="from $1"; VERSION=`head -n 1 $1 | sed 's/ //g'`; fi; }
   search_pwd_and_parents_for () {
     path_slashes=${PWD//[^\/]/}
     num_path_dirs="${#path_slashes}"
