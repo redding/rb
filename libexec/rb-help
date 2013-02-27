@@ -9,6 +9,7 @@ rb ($RB_RELEASE release)
 usage: rb [@<version>]
        rb -f <version_file>
        rb help [<cmd>]
+       rb status
        rb init [--auto]
        rb --version
 
@@ -26,6 +27,15 @@ Print command usage info.
 
 usage: rb help
        rb help [cmd]
+USAGE
+    exit 0
+
+  elif [[ "$command" == "status" ]]; then
+
+    cat <<USAGE
+Print the current version and source info
+
+usage: rb status
 USAGE
     exit 0
 
