@@ -11,7 +11,7 @@ $ rb help
 
 **modifies env vars**: activates installs by modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.  To accomplish this, it...
 
-**adds two functions to your shell**: one for the activation script and one for the CLI.  These are needed to modify shell env vars above.
+**adds functions to your shell**: for the activation, for resetting, and for the CLI.  These are needed to modify shell env vars.
 
 **.ruby-version files**: supports specifying installs with `.ruby-version` files.
 
@@ -52,12 +52,13 @@ $ rb help
 The Ruby Auto Activator (release <release>)
 
 usage: rb [@<version>]
+       rb -f <version_file>
        rb help [<cmd>]
        rb init [--auto]
        rb --version
 
 More Info:
-  https://github.com/rootedwest/rb
+  https://github.com/rootedwest/rb/blob/<release>/README.md
 ```
 
 ### Using With `.ruby-version` Files
@@ -71,7 +72,16 @@ $ echo "1.9.3-p0" > $HOME/.ruby-version
 $ rb && ruby -v    # will use 1.9.3-p0
 ```
 
-If the `@<version>` parameter is given, it will always override whatever versions are specified in available `.ruby-version` files.
+You can specify a ruby version file using the `-f` option.  This allows you to specify a version file to use without having to cd there first.
+
+```
+$ cd $HOME
+$ echo 'ree-1.8.7-2012.02' > /a/path/to/.ruby-version
+$ rb -f /a/path/to/.ruby-version
+$ ruby -v          # will use ree-1.8.7-2012.02
+```
+
+If the `@<version>` parameter is given, it will always override any versions specified in `.ruby-version` files.
 
 ### Using With Pow
 
