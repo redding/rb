@@ -1,7 +1,8 @@
-# rb Change Log
+# rb Changelog
 
 ## (next release)
 
+* include the release in the local install dir name (#22)
 * `-f` option to specify version files to use (#13)
 * reset the env when activating from the `rb` cli (#9)
 * remove all whitespace when reading version string from files (#16)
