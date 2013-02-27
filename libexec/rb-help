@@ -10,6 +10,7 @@ usage: rb [@<version>]
        rb -f <version_file>
        rb help [<cmd>]
        rb status
+       rb list
        rb init [--auto]
        rb --version
 
@@ -36,6 +37,15 @@ USAGE
 Print the current version and source info
 
 usage: rb status
+USAGE
+    exit 0
+
+  elif [[ "$command" == "list" ]]; then
+
+    cat <<USAGE
+List the available versions, marking the currently active version
+
+usage: rb list
 USAGE
     exit 0
 
