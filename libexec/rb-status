@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cat <<STATUS
+$RB_RUBY_VERSION ($RB_RUBY_SOURCE)
+STATUS
+
+exit 0

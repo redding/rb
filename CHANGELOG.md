@@ -1,5 +1,6 @@
 ## beta3 / Unreleased
 
+* status cmd to print current ruby version and source info (#24)
 * include the release in the local install dir name (#22)
 * `-f` option to specify version files to use (#13)
 * reset the env when activating from the `rb` cli (#9)

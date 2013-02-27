@@ -104,7 +104,7 @@ rb () {
     elif [ "$1" = "-f" ]; then _rb_reset $2
     elif [[ $1 =~ ^@ ]];  then _rb_reset $@
     elif [ -z $1 ];       then _rb_reset
-    else echo "rb: no such command \`$command_arg'" >&2
+    else echo "rb: no such command \`$cmd_arg'" >&2
     fi
   fi
 }
