@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export RB_RELEASE="beta2"
+export RB_RELEASE="beta3"
 
 [ -n "$RB_RUBIES_DIR"   ] || export RB_RUBIES_DIR="$HOME/.rubies"
 [ -n "$RB_VERSION_FILE" ] || export RB_VERSION_FILE=".ruby-version"

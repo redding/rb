@@ -3,7 +3,7 @@
 set -e
 
 RB_HOME_DIR="$HOME/.rb"
-RB_RELEASE="beta2"
+RB_RELEASE="beta3"
 
 # make sure the bin path is in place
 

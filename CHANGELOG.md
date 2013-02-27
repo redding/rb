@@ -1,4 +1,4 @@
-## beta3 / Unreleased
+## beta3 / 2013-02-27
 
 * list cmd to show available versions, marking the currently active version (#25)
 * status cmd to print current ruby version and source info (#24)
