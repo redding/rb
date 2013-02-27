@@ -15,7 +15,7 @@ RB_RELEASE="beta2"
 
       rm -rf "$RB_HOME_DIR" && mkdir -p "$RB_HOME_DIR"
       pushd "$RB_HOME_DIR" > /dev/null &&
-        curl -L "https://github.com/rootedwest/rb/tarball/$RB_RELEASE" | tar xzf - */libexec/*
+        curl -L "https://github.com/redding/rb/tarball/$RB_RELEASE" | tar xzf - */libexec/*
         ln -sf */libexec
       popd > /dev/null
 
