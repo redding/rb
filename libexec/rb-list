@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+for v in `/bin/ls $RB_RUBIES_DIR`; do
+  shift
+
+  if [[ "$v" == "$RB_RUBY_VERSION" ]]; then
+    echo "* $v ($RB_RUBY_SOURCE)"
+  else
+    echo "  $v"
+  fi
+done
+
+exit 0
