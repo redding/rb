@@ -4,7 +4,7 @@ command="$1"
 if [ -z $command ]; then
 
   cat <<USAGE
-rb ($RB_RELEASE release)
+'$RB_RELEASE' release
 
 usage: rb [@<version>]
        rb -f <version_file>
