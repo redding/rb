@@ -51,30 +51,22 @@ eval "$(rb init --auto)"
 
 ```
 $ rb help
-rb (<release> release)
-
-usage: rb [@<version>]
-       rb -f <version_file>
-       rb help [<cmd>]
-       rb init [--auto]
-       rb --version
-
-More Info:
-  https://github.com/redding/rb/blob/<release>/README.md
 ```
 
-### Using With `.ruby-version` Files
+### System Rubie
 
-If no explicit @<verion> parameter is specified, rb will look for the version in a file named `.ruby-version` in your current directory and its parent directories, followed by your home directory.
+```
+$ rb @system
+```
 
-The `.ruby-version` files are expected to contain nothing but the installation requested.
+### `.ruby-version` Files
 
 ```
 $ echo "1.9.3-p0" > $HOME/.ruby-version
-$ rb && ruby -v    # will use 1.9.3-p0
+$ cd $HOME && rb && ruby -v  # 1.9.3-p0
 ```
 
-You can specify a ruby version file using the `-f` option.  This allows you to specify a version file to use without having to cd there first.
+If no explicit @<verion> parameter is specified, rb will look for the version in a file named `.ruby-version` in your current directory, its parent directories, or your home directory.  The `.ruby-version` files are expected to contain nothing but the installation requested.
 
 ```
 $ cd $HOME
@@ -83,20 +75,16 @@ $ rb -f /a/path/to/.ruby-version
 $ ruby -v          # will use ree-1.8.7-2012.02
 ```
 
-If the `@<version>` parameter is given, it will always override any versions specified in `.ruby-version` files.
+You can specify a ruby version file using the `-f` option.  This allows you to specify a version file to use without having to cd there first.
 
-### Using With Pow
+**Note**: If an `@<version>` parameter is given, it will always override any versions specified in `.ruby-version` files.
+
+### Pow
 
 Add a `.ruby-version` file to your project, as well as a `.powrc` file containing the following line (this will make Pow start up your project using the install in the version file):
 
 ```bash
 source `which rb`
-```
-
-### Using The System Rubie
-
-```
-$ rb @system
 ```
 
 ## Uninstall
