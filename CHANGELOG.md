@@ -1,5 +1,6 @@
 ## beta3 / Unreleased
 
+* list cmd to show available versions, marking the currently active version (#25)
 * status cmd to print current ruby version and source info (#24)
 * include the release in the local install dir name (#22)
 * `-f` option to specify version files to use (#13)
