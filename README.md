@@ -1,11 +1,13 @@
-# rb: The Ruby Auto Activator
+# rb
 
 ```
-$ rb @1.9.3 && ruby -v                           # set process to '1.9.3' install
-$ echo 'ree' > ./.ruby-version && rb && ruby -v  # set process to current `.ruby-version` ('ree') install
-$ rb @system && ruby -v                          # set process to system install
+$ rb @1.9.3 && ruby -v                           # activate '1.9.3' install
+$ echo 'ree' > ./.ruby-version && rb && ruby -v  # activate current `.ruby-version` ('ree') install
+$ rb @system && ruby -v                          # activate system install
 $ rb help
 ```
+
+Activate installed Ruby versions.
 
 ## What It Does
 
@@ -27,10 +29,10 @@ Each installed version of ruby should live in `$HOME/.rubies/<version>`.  Instal
 
 ## Install
 
-Open a terminal and run this command ([view source](http://git.io/rb-install)):
+Open a terminal and run this command ([view source](http://git.io/rb--install)):
 
 ```
-$ curl -L http://git.io/rb-install | sh
+$ curl -L http://git.io/rb--install | sh
 ```
 
 Add rb init to your shell startup script.  This installs tab completions and enables modifying the env vars.
@@ -49,7 +51,7 @@ eval "$(rb init --auto)"
 
 ```
 $ rb help
-The Ruby Auto Activator (release <release>)
+rb (<release> release)
 
 usage: rb [@<version>]
        rb -f <version_file>
@@ -58,7 +60,7 @@ usage: rb [@<version>]
        rb --version
 
 More Info:
-  https://github.com/rootedwest/rb/blob/<release>/README.md
+  https://github.com/redding/rb/blob/<release>/README.md
 ```
 
 ### Using With `.ruby-version` Files
@@ -99,10 +101,10 @@ $ rb @system
 
 ## Uninstall
 
-Open a terminal and run this command ([view source](http://git.io/rb-uninstall)):
+Open a terminal and run this command ([view source](http://git.io/rb--uninstall)):
 
 ```
-$ curl -L http://git.io/rb-uninstall | sh
+$ curl -L http://git.io/rb--uninstall | sh
 ```
 
 ## Contributing
