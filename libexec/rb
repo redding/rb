@@ -14,9 +14,7 @@ _rb_path_remove () {
 _rb_unset_env () {
   _rb_path_remove "$RB_RUBIES_DIR/$RUBY_VERSION/bin"
   _rb_path_remove "$RB_RUBIES_DIR/$RUBY_VERSION/lib/ruby/gems/bin"
-  unset GEM_PATH
-  unset GEM_HOME
-  unset RUBY_VERSION
+  unset RUBY_VERSION RUBY_ROOT GEM_PATH GEM_HOME
   export RB_RUBY_VERSION=""
   export RB_RUBY_SOURCE=""
 }
@@ -64,10 +62,11 @@ _rb_activate () {
       v=$(readlink -n "$RB_RUBIES_DIR/$RB_RUBY_VERSION" | sed 's/\/$//')
     fi
     set_env_var RUBY_VERSION "$v"
-    set_env_var GEM_HOME "$RB_RUBIES_DIR/$v/lib/ruby/gems"
-    set_env_var GEM_PATH "$RB_RUBIES_DIR/$v/lib/ruby/gems"
-    path_prepend "$RB_RUBIES_DIR/$v/lib/ruby/gems/bin"
-    path_prepend "$RB_RUBIES_DIR/$v/bin"
+    set_env_var RUBY_ROOT    "$RB_RUBIES_DIR/$v"
+    set_env_var GEM_HOME     "$RUBY_ROOT/lib/ruby/gems"
+    set_env_var GEM_PATH     "$RUBY_ROOT/lib/ruby/gems"
+    path_prepend "$RUBY_ROOT/lib/ruby/gems/bin"
+    path_prepend "$RUBY_ROOT/bin"
   }
 
   # get the requested version
