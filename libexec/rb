@@ -11,13 +11,14 @@ _rb_path_remove () {
   export PATH="`echo $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`";
 }
 
-_rb_reset_env () {
-  _rb_path_remove "$RB_RUBIES_DIR/$RB_RUBY_VERSION/bin"
-  _rb_path_remove "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems/bin"
+_rb_unset_env () {
+  _rb_path_remove "$RB_RUBIES_DIR/$RUBY_VERSION/bin"
+  _rb_path_remove "$RB_RUBIES_DIR/$RUBY_VERSION/lib/ruby/gems/bin"
   unset GEM_PATH
   unset GEM_HOME
-  export RB_RUBY_VERSION="$1"
-  export RB_RUBY_SOURCE="$2"
+  unset RUBY_VERSION
+  export RB_RUBY_VERSION=""
+  export RB_RUBY_SOURCE=""
 }
 
 _rb_activate () {
@@ -53,11 +54,20 @@ _rb_activate () {
       path="$path/.."
     done
   }
-  apply_version_to_env () {
-    set_env_var GEM_HOME "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems"
-    set_env_var GEM_PATH "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems"
-    path_prepend "$RB_RUBIES_DIR/$RB_RUBY_VERSION/lib/ruby/gems/bin"
-    path_prepend "$RB_RUBIES_DIR/$RB_RUBY_VERSION/bin"
+  set_state() {
+    export RB_RUBY_VERSION="$1"
+    export RB_RUBY_SOURCE="$2"
+  }
+  set_env () {
+    local v="$RB_RUBY_VERSION"
+    if [ -h "$RB_RUBIES_DIR/$RB_RUBY_VERSION" ]; then
+      v=$(readlink -n "$RB_RUBIES_DIR/$RB_RUBY_VERSION" | sed 's/\/$//')
+    fi
+    set_env_var RUBY_VERSION "$v"
+    set_env_var GEM_HOME "$RB_RUBIES_DIR/$v/lib/ruby/gems"
+    set_env_var GEM_PATH "$RB_RUBIES_DIR/$v/lib/ruby/gems"
+    path_prepend "$RB_RUBIES_DIR/$v/lib/ruby/gems/bin"
+    path_prepend "$RB_RUBIES_DIR/$v/bin"
   }
 
   # get the requested version
@@ -88,7 +98,8 @@ _rb_activate () {
   if [ "$SOURCE" != "$RB_RUBY_SOURCE" ] || [ "$VERSION" != "$RB_RUBY_VERSION" ]; then
     if [[ "$VERSION" == "system" ]]; then
       # system version requested, activate it
-      _rb_reset_env "$VERSION" "$SOURCE"
+      _rb_unset_env
+      set_state "$VERSION" "$SOURCE"
       MSG="Activated (system) `ruby -v`"
     elif [ ! -e "$RB_RUBIES_DIR/$VERSION" ]; then
       # requested version not installed
@@ -97,8 +108,9 @@ _rb_activate () {
       return 1
     else
       # an installed version requested, activate it
-      _rb_reset_env "$VERSION" "$SOURCE"
-      apply_version_to_env
+      _rb_unset_env
+      set_state "$VERSION" "$SOURCE"
+      set_env
       MSG="Activated $VERSION"
     fi
     info "$MSG ($SOURCE)"
@@ -107,8 +119,8 @@ _rb_activate () {
 }
 
 rb () {
-  reset () { _rb_reset_env "" ""; _rb_activate $@; }
-  local cmd_arg="$1"
+  reset () { _rb_unset_env; _rb_activate $@; }
+  cmd_arg="$1"
   pushd "$(readlink `which rb`)/.." > /dev/null; cmd_bin="$PWD/rb-$cmd_arg"; popd > /dev/null
   if [ -x $cmd_bin ]; then
     shift 1; eval "$cmd_bin $@"
