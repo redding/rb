@@ -28,7 +28,9 @@ _rb_activate () {
   set_env_var () { export $1="$2"; }
   unset_env_var () { unset $1; }
   path_prepend () { _rb_path_remove $1; set_env_var PATH "$1:$PATH"; }
-  read_version_from_file () { if [ -f "$1" ]; then SOURCE="from $1"; VERSION=`head -n 1 $1 | sed 's/ //g'`; fi; }
+  read_version_from_file () {
+    if [ -f "$1" ]; then SOURCE="from $1"; VERSION=`head -n 1 $1 | sed 's/ //g'`; fi;
+  }
   search_pwd_and_parents_for () {
     path_slashes=${PWD//[^\/]/}
     num_path_dirs="${#path_slashes}"
@@ -74,13 +76,16 @@ _rb_activate () {
   # apply the requested version, if needed
 
   if [ "$SOURCE" != "$RB_RUBY_SOURCE" ] || [ "$VERSION" != "$RB_RUBY_VERSION" ]; then
-    if [[ "$VERSION" == "system" ]]; then            # system version requested, activate it
+    if [[ "$VERSION" == "system" ]]; then
+      # system version requested, activate it
       _rb_reset_env "$VERSION" "$SOURCE"; MSG="Activated (system) `ruby -v`"
-    elif [ ! -e "$RB_RUBIES_DIR/$VERSION" ]; then    # requested version not installed
+    elif [ ! -e "$RB_RUBIES_DIR/$VERSION" ]; then
+      # requested version not installed
       warn "$VERSION was requested ($SOURCE) but is not installed.\n\nInstall it with ruby-build:"
       warn "ruby-build $VERSION $RB_RUBIES_DIR/$VERSION"
       return 1
-    else                                             # an installed version requested, activate it
+    else
+      # an installed version requested, activate it
       _rb_reset_env "$VERSION" "$SOURCE"; apply_version_to_env; MSG="Activated $VERSION"
     fi
     info "$MSG ($SOURCE)"
