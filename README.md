@@ -9,15 +9,15 @@ $ rb help
 
 Activate installed Ruby versions.
 
-## What It Does
+## What It Does...
 
-**modifies env vars**: activates installs by modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.  To accomplish this, it...
+**modifies env vars**: activates versions by modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.  To accomplish this, it...
 
-**adds functions to your shell**: for the activation, for resetting, and for the CLI.  These are needed to modify shell env vars.
+**adds functions to your shell**: for activating, resetting, and the CLI.  These are needed to modify shell env vars.
 
-**.ruby-version files**: supports specifying installs with `.ruby-version` files.
+**.ruby-version files**: supports specifying versions with `.ruby-version` files.
 
-**auto mode**: (optional) modify your env as you `cd` into a directory containing a `.ruby-version` file.  This is accomplished by overriding `cd` and is **optional**.
+**auto mode**: (optional) update the version when you `cd` to a directory containing a `.ruby-version` file (does not hook `cd`).
 
 **tab completions**: version string parameters, commands, etc.
 
@@ -41,7 +41,7 @@ Add rb init to your shell startup script.  This installs tab completions and ena
 eval "$(rb init)"
 ```
 
-(optional) If you want automatic handling, add the `--auto` flag.  In additon to the normal init above, this overrides `cd` so your ruby version is auto updated as you change directories.  It is **optional**.
+(optional) If you want automatic handling, add the `--auto` flag.  In additon to the normal init above, `$PROMPT_COMMAND` is updated to activate any new ruby version as you change directories.  **Again, this is optional.**
 
 ```bash
 eval "$(rb init --auto)"
