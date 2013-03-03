@@ -117,6 +117,10 @@ _rb_activate () {
 
 }
 
+_rb_auto_activate () {
+  [[ "$PWD" != "$RB_PWD" ]] && export RB_PWD="$PWD" && _rb_activate
+}
+
 rb () {
   reset () { _rb_unset_env; _rb_activate $@; }
   cmd_arg="$1"

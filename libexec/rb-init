@@ -33,9 +33,15 @@ if [ "$1" = "--auto" ]; then
   # (optional) auto mode (update ruby version as you change directories)
 
   cat <<AUTO_MODE
-function cd () {
-  builtin cd "\$@" && _rb_activate
-}
+PROMPT_COMMAND="${PROMPT_COMMAND%% }"
+if [[ -n "$PROMPT_COMMAND" ]]; then
+  if [[ ! "$PROMPT_COMMAND" == *_rb_auto_activate* ]]; then
+    PROMPT_COMMAND="${PROMPT_COMMAND%%;}"
+    PROMPT_COMMAND="$PROMPT_COMMAND; _rb_auto_activate"
+  fi
+else
+  PROMPT_COMMAND="_rb_auto_activate"
+fi
 AUTO_MODE
 
 fi
