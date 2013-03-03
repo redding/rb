@@ -7,64 +7,36 @@ export RB_RELEASE="beta3"
 [ -n "$RB_RUBY_VERSION" ] || export RB_RUBY_VERSION=""
 [ -n "$RB_RUBY_SOURCE"  ] || export RB_RUBY_SOURCE=""
 
-_rb_path_remove () {
-  export PATH="`echo $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`";
-}
+_rb_path_remove () { export PATH="`echo $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`"; }
 
 _rb_unset_env () {
   _rb_path_remove "$RB_RUBIES_DIR/$RUBY_VERSION/bin"
   _rb_path_remove "$RB_RUBIES_DIR/$RUBY_VERSION/lib/ruby/gems/bin"
   unset RUBY_VERSION RUBY_ROOT GEM_PATH GEM_HOME
-  export RB_RUBY_VERSION=""
-  export RB_RUBY_SOURCE=""
+  export RB_RUBY_VERSION="" RB_RUBY_SOURCE=""
 }
 
 _rb_activate () {
-  local VERSION SOURCE MSG PWD_AND_PARENTS_SEARCH_RESULT
+  local VERSION SOURCE MSG VERSION_FILE
   warn () { echo -e "$1" >&2; }
   info () { warn "$1"; }
   set_env_var () { export $1="$2"; }
   unset_env_var () { unset $1; }
-  path_prepend () {
-    _rb_path_remove $1
-    set_env_var PATH "$1:$PATH"
-  }
-  read_version_from_file () {
-    if [ -f "$1" ]; then
-      VERSION=`head -n 1 $1 | sed 's/ //g'`
-      SOURCE="from $1"
-    fi
-  }
+  path_prepend () { _rb_path_remove $1; set_env_var PATH "$1:$PATH"; }
+  set_file_version () { [ -f "$1" ] && VERSION=`head -n 1 $1 | sed 's/ //g'` && SOURCE="from $1"; }
   search_pwd_and_parents_for () {
-    path_slashes=${PWD//[^\/]/}
-    num_path_dirs="${#path_slashes}"
-    path="$PWD"
-
+    path="$PWD" path_slashes=${PWD//[^\/]/} num_path_dirs="${#path_slashes}"
     for (( n=${num_path_dirs}; n>0; --n )) do
-      test -e "$path/$1" &&
-        ORIG_OLDPWD="$OLDPWD" &&
-        pushd "$path" > /dev/null &&
-        PWD_AND_PARENTS_SEARCH_RESULT="$PWD/$1" &&
-        popd > /dev/null &&
-        OLDPWD="$ORIG_OLDPWD" &&
-        return
-
+      test -e "$path/$RB_VERSION_FILE" && VERSION_FILE="$PWD/$RB_VERSION_FILE" && return
       path="$path/.."
     done
   }
-  set_state() {
-    export RB_RUBY_VERSION="$1"
-    export RB_RUBY_SOURCE="$2"
-  }
+  set_state () { export RB_RUBY_VERSION="$1" RB_RUBY_SOURCE="$2"; }
   set_env () {
-    local v="$RB_RUBY_VERSION"
-    if [ -h "$RB_RUBIES_DIR/$RB_RUBY_VERSION" ]; then
-      v=$(readlink -n "$RB_RUBIES_DIR/$RB_RUBY_VERSION" | sed 's/\/$//')
-    fi
-    set_env_var RUBY_VERSION "$v"
-    set_env_var RUBY_ROOT    "$RB_RUBIES_DIR/$v"
-    set_env_var GEM_HOME     "$RUBY_ROOT/lib/ruby/gems"
-    set_env_var GEM_PATH     "$RUBY_ROOT/lib/ruby/gems"
+    local v="$RB_RUBY_VERSION" dv="$RB_RUBIES_DIR/$RB_RUBY_VERSION"
+    [ -h $dv ] && v=$(readlink -n "$dv" | sed 's/\/$//')
+    export RUBY_VERSION="$v" RUBY_ROOT="$RB_RUBIES_DIR/$v"
+    export GEM_HOME="$RUBY_ROOT/lib/ruby/gems" GEM_PATH="$RUBY_ROOT/lib/ruby/gems"
     path_prepend "$RUBY_ROOT/lib/ruby/gems/bin"
     path_prepend "$RUBY_ROOT/bin"
   }
@@ -76,30 +48,21 @@ _rb_activate () {
     VERSION=$1; VERSION=${VERSION:1}; SOURCE="from command line";
   elif [ -f "$1" ]; then
     # from file containing VERSION string
-    read_version_from_file "$1"
+    set_file_version "$1"
   fi
-  if [ -z "$VERSION" ]; then
-    # from pwd search .ruby-version, if present
-    search_pwd_and_parents_for "$RB_VERSION_FILE"
-    read_version_from_file "$PWD_AND_PARENTS_SEARCH_RESULT"
-  fi
-  if [ -z "$VERSION" ]; then
-    # from $HOME/.ruby-version, if present
-    read_version_from_file "$HOME/$RB_VERSION_FILE"
-  fi
-  if [ -z "$VERSION" ]; then
-    # default to the system version
-    VERSION="system"; SOURCE="default";
-  fi
+  # from pwd search .ruby-version, if present
+  [ -z "$VERSION" ] && search_pwd_and_parents_for && set_file_version "$VERSION_FILE"
+  # from $HOME/.ruby-version, if present
+  [ -z "$VERSION" ] && set_file_version "$HOME/$RB_VERSION_FILE"
+  # default to the system version
+  [ -z "$VERSION" ] && VERSION="system" && SOURCE="default"
 
   # apply the requested version, if needed
 
   if [ "$SOURCE" != "$RB_RUBY_SOURCE" ] || [ "$VERSION" != "$RB_RUBY_VERSION" ]; then
     if [[ "$VERSION" == "system" ]]; then
       # system version requested, activate it
-      _rb_unset_env
-      set_state "$VERSION" "$SOURCE"
-      MSG="Activated (system) `ruby -v`"
+      _rb_unset_env && set_state "$VERSION" "$SOURCE" && MSG="Activated (system) `ruby -v`"
     elif [ ! -e "$RB_RUBIES_DIR/$VERSION" ]; then
       # requested version not installed
       warn "$VERSION was requested ($SOURCE) but is not installed.\n\nInstall it with ruby-build:"
@@ -107,19 +70,13 @@ _rb_activate () {
       return 1
     else
       # an installed version requested, activate it
-      _rb_unset_env
-      set_state "$VERSION" "$SOURCE"
-      set_env
-      MSG="Activated $VERSION"
+      _rb_unset_env && set_state "$VERSION" "$SOURCE" && set_env && MSG="Activated $VERSION"
     fi
     info "$MSG ($SOURCE)"
   fi
-
 }
 
-_rb_auto_activate () {
-  [[ "$PWD" != "$RB_PWD" ]] && export RB_PWD="$PWD" && _rb_activate
-}
+_rb_auto_activate () { [[ "$PWD" != "$RB_PWD" ]] && export RB_PWD="$PWD" && _rb_activate; }
 
 rb () {
   reset () { _rb_unset_env; _rb_activate $@; }

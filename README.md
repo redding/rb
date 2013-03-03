@@ -7,21 +7,22 @@ $ rb @system && ruby -v                          # activate system install
 $ rb help
 ```
 
-Activate installed Ruby versions.
+Switch between installed Ruby versions.
 
 ## What It Does...
 
-**modifies env vars**: activates versions by modifying the `PATH`, `GEM_HOME` and `GEM_PATH` env vars.  To accomplish this, it...
+**Modifies env vars:** switches versions by modifying the `PATH`, `GEM_HOME` and `GEM_PATH`
+  env vars.  To accomplish this, it...
 
-**adds functions to your shell**: for activating, resetting, and the CLI.  These are needed to modify shell env vars.
+**Adds functions to your shell:** these are needed to modify shell env vars and are used to
+  activate and reset the env, and to implement the CLI.
 
-**.ruby-version files**: supports specifying versions with `.ruby-version` files.
+**.ruby-version files:** supports specifying versions with `.ruby-version` files.
 
-**auto mode**: (optional) update the version when you `cd` to a directory containing a `.ruby-version` file (does not hook `cd`).
+**Auto mode:** (optional) update the version when you `cd` to a directory containing a
+  `.ruby-version` file (does not hook `cd`).
 
-**tab completions**: version string parameters, commands, etc.
-
-**simple, focused**: it activates installed rubies.
+**Tab completions:** version string parameters, commands, etc.
 
 ## Rubies
 
@@ -34,6 +35,8 @@ Open a terminal and run this command ([view source](http://git.io/rb--install)):
 ```
 $ curl -L http://git.io/rb--install | sh
 ```
+
+## Init
 
 Add rb init to your shell startup script.  This installs tab completions and enables modifying the env vars.
 
@@ -61,21 +64,21 @@ $ rb @system
 
 ### `.ruby-version` Files
 
+If no explicit @<verion> parameter is specified, rb will look for the version in a file named `.ruby-version` in your current directory, its parent directories, or your home directory.  The `.ruby-version` files are expected to contain nothing but the version requested.
+
 ```
 $ echo "1.9.3-p0" > $HOME/.ruby-version
 $ cd $HOME && rb && ruby -v  # 1.9.3-p0
 ```
 
-If no explicit @<verion> parameter is specified, rb will look for the version in a file named `.ruby-version` in your current directory, its parent directories, or your home directory.  The `.ruby-version` files are expected to contain nothing but the installation requested.
+You can specify a ruby version file using the `-f` option.  This allows you to specify a version file to use without having to cd there first.
 
 ```
 $ cd $HOME
 $ echo 'ree-1.8.7-2012.02' > /a/path/to/.ruby-version
 $ rb -f /a/path/to/.ruby-version
-$ ruby -v          # will use ree-1.8.7-2012.02
+$ ruby -v # will use ree-1.8.7-2012.02
 ```
-
-You can specify a ruby version file using the `-f` option.  This allows you to specify a version file to use without having to cd there first.
 
 **Note**: If an `@<version>` parameter is given, it will always override any versions specified in `.ruby-version` files.
 
