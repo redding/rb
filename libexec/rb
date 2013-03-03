@@ -123,8 +123,10 @@ _rb_auto_activate () {
 
 rb () {
   reset () { _rb_unset_env; _rb_activate $@; }
-  cmd_arg="$1"
+  local cmd_arg="$1" ORIG_OLDPWD="$OLDPWD"
   pushd "$(readlink `which rb`)/.." > /dev/null; cmd_bin="$PWD/rb-$cmd_arg"; popd > /dev/null
+  export OLDPWD="$ORIG_OLDPWD"
+
   if [ -x $cmd_bin ]; then
     shift 1; eval "$cmd_bin $@"
   else
