@@ -9,7 +9,7 @@ if [ -z $command ]; then
 usage: rb [@<version>]
        rb -f FILE
        rb exec [@<version>] [-f FILE] -- COMMAND
-       rb help CMD
+       rb help [CMD]
        rb status
        rb list
        rb init [--auto] [--quiet]

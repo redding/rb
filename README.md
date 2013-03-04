@@ -26,7 +26,7 @@ Switch between installed Ruby versions.
 
 ## Rubies
 
-Each installed version of ruby should live in `$HOME/.rubies/<version>`.  Install versions any way you prefer; [ruby-build](https://github.com/sstephenson/ruby-build) is recommended.
+Each installed version of ruby should live in `$HOME/.rubies/`.  Install versions any way you prefer; [ruby-build](https://github.com/sstephenson/ruby-build) is recommended.
 
 ## Install
 
@@ -66,7 +66,7 @@ eval "$(rb init --quiet)"
 $ rb help
 ```
 
-### System Rubie
+### System Ruby
 
 ```
 $ rb @system
@@ -81,7 +81,7 @@ $ echo "1.9.3-p0" > $HOME/.ruby-version
 $ cd $HOME && rb && ruby -v  # 1.9.3-p0
 ```
 
-You can specify a ruby version file using the `-f` option.  This allows you to specify a version file to use without having to cd there first.
+You can specify a specific version file using the `-f` option:
 
 ```
 $ cd $HOME
