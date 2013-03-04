@@ -82,11 +82,8 @@ _rb_auto_activate () { [[ "$PWD" != "$RB_PWD" ]] && export RB_PWD="$PWD" && _rb_
 
 rb () {
   reset () { _rb_unset_env; _rb_activate $@; }
-  local cmd_arg="$1" ORIG_OLDPWD="$OLDPWD"
-  pushd "$(readlink `which rb`)/.." > /dev/null; cmd_bin="$PWD/rb-$cmd_arg"; popd > /dev/null
-  export OLDPWD="$ORIG_OLDPWD"
-
-  if [ -x $cmd_bin ]; then
+  local cmd_arg="$1" cmd_bin="$(readlink `which rb`)/../rb-$1"
+  if [ -x "$cmd_bin" ]; then
     shift 1; eval "$cmd_bin $@"
   else
     if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then echo "$RB_RELEASE"
