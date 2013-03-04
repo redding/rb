@@ -1,3 +1,12 @@
+## 1.0.0.rc1 / 2013-03-04
+
+* quiet mode - added a `--quiet` flag to the init command (#32)
+* `exec` command - execute a command using a specific ruby version (#31)
+* change auto handling to use the `PROMPT_COMMAND` env var (#30)
+* set RUBY_ROOT env var (#29)
+* resolve ruby versions symlinks when applying to the env (#28)
+* more succinct help msg (#27)
+
 ## beta3 / 2013-02-27
 
 * list cmd to show available versions, marking the currently active version (#25)
