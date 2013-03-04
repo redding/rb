@@ -48,7 +48,9 @@ _rb_activate () {
     VERSION=$1; VERSION=${VERSION:1}; SOURCE="from command line";
   elif [ -f "$1" ]; then
     # from file containing VERSION string
-    set_file_version "$1"
+    local file="$1"
+    [[ ! $1 =~ ^\/ ]] && file="$PWD/$file"
+    set_file_version "$file"
   fi
   # from pwd search .ruby-version, if present
   [ -z "$VERSION" ] && search_pwd_and_parents_for && set_file_version "$VERSION_FILE"
