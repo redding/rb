@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+argv=()
+
+for arg in $@; do
+  shift
+  if [[ "$arg" == "--" ]]; then
+    break
+  else
+    argv+=($arg)
+  fi
+done
+
+if [[ $# -eq 0 ]]; then
+  echo "rb: exec needs a command to run" >&2
+  exit 1
+fi
+
+exec $SHELL -l -i -c "_rb_activate $argv && $*"
