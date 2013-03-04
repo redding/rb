@@ -36,7 +36,7 @@ Open a terminal and run this command ([view source](http://git.io/rb--install)):
 $ curl -L http://git.io/rb--install | sh
 ```
 
-## Init
+### Init
 
 Add rb init to your shell startup script.  This installs tab completions and enables modifying the env vars.
 
@@ -44,10 +44,20 @@ Add rb init to your shell startup script.  This installs tab completions and ena
 eval "$(rb init)"
 ```
 
-(optional) If you want automatic handling, add the `--auto` flag.  In additon to the normal init above, `$PROMPT_COMMAND` is updated to activate any new ruby version as you change directories.  **Again, this is optional.**
+### Auto Mode
+
+(optional) If you want automatic handling, add the `--auto` flag to the init.  In additon to the normal init above, `$PROMPT_COMMAND` is updated to activate any new ruby version as you change directories.  **Again, this is optional.**
 
 ```bash
 eval "$(rb init --auto)"
+```
+
+### Quiet Mode
+
+By default, rb outputs a warning saying which version/source it activates. If you want to silence these warnings, add the `--quiet` flag to the init.
+
+```bash
+eval "$(rb init --quiet)"
 ```
 
 ## Usage

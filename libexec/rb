@@ -74,8 +74,9 @@ _rb_activate () {
       # an installed version requested, activate it
       _rb_unset_env && set_state "$VERSION" "$SOURCE" && set_env && MSG="Activated $VERSION"
     fi
-    info "$MSG ($SOURCE)"
+    [[ ! "$RB_QUIET_MODE" == "true" ]] && info "$MSG ($SOURCE)"
   fi
+  return 0
 }
 
 _rb_auto_activate () { [[ "$PWD" != "$RB_PWD" ]] && export RB_PWD="$PWD" && _rb_activate; }

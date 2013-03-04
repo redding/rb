@@ -12,7 +12,7 @@ usage: rb [@<version>]
        rb help CMD
        rb status
        rb list
-       rb init [--auto]
+       rb init [--auto] [--quiet]
        rb --version
 
 More Info:
@@ -64,10 +64,10 @@ USAGE
   elif [[ "$command" == "init" ]]; then
 
     cat <<USAGE
-Output a script to eval in the shell.
+Output an initialization script to eval in the shell.
 
 usage: eval "\$(rb init)"
-       eval "\$(rb init --auto)"
+       eval "\$(rb init [--auto] [--quiet])"
 USAGE
     exit 0
 
