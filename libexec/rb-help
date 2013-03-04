@@ -7,8 +7,9 @@ if [ -z $command ]; then
 '$RB_RELEASE' release
 
 usage: rb [@<version>]
-       rb -f <version_file>
-       rb help [<cmd>]
+       rb -f FILE
+       rb exec [@<version>] [-f FILE] -- COMMAND
+       rb help CMD
        rb status
        rb list
        rb init [--auto]
@@ -21,7 +22,18 @@ USAGE
 
 else
 
-  if [[ "$command" == "help" ]]; then
+  if [[ "$command" == "exec" ]]; then
+
+    cat <<USAGE
+Execute a command using a specific ruby version
+
+usage: rb exec -- COMMAND
+       rb exec @<version> -- COMMAND
+       rb exec -f FILE -- COMMAND
+USAGE
+    exit 0
+
+  elif [[ "$command" == "help" ]]; then
 
     cat <<USAGE
 Print command usage info.

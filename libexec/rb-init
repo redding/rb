@@ -8,7 +8,7 @@ if command -v complete >/dev/null 2>&1; then
       versions=\$(\\ls -1 $RB_RUBIES_DIR | sed -e "s/^/@/")
       cmds=\$(\\ls -1 `which rb`/.. | grep rb-  | sed -e "s/^rb-//" | sed -e "s/*$//")
 
-      if [[ \$COMP_CWORD == 1 ]]; then
+      if [[ \$COMP_CWORD == 1 ]] || [[ \$COMP_CWORD == 2 ]] && [[ \${COMP_WORDS[1]} == 'exec' ]]; then
         COMPREPLY=( \$(compgen -W "\${cmds} \${versions} @system --version -f" -- \${cur}) )
         return 0
       fi
