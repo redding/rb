@@ -91,7 +91,7 @@ rb () {
     elif [ "$1" = "-h" ] || [ "$1" = "--help" ];  then eval "rb help"
     elif [ "$1" = "-f" ]; then reset $2
     elif [[ $1 =~ ^@ ]];  then reset $@
-    elif [ -z $1 ];       then reset
+    elif [ -z $1 ];       then eval "rb status"
     else echo "rb: no such command \`$cmd_arg'" >&2
     fi
   fi
