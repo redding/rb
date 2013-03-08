@@ -18,7 +18,7 @@ _rb_unset_env () {
 }
 
 _rb_activate () {
-  local VERSION SOURCE MSG VERSION_FILE
+  local VERSION="$RB_RUBY_VERSION" SOURCE="$RB_RUBY_SOURCE" MSG VERSION_FILE
   warn () { echo -e "$1" >&2; }
   info () { warn "$1"; }
   set_env_var () { export $1="$2"; }
@@ -45,6 +45,9 @@ _rb_activate () {
 
   # get the requested version
 
+  # from pwd search for a `.ruby-version` file, if present
+  search_pwd_and_parents_for && set_file_version "$VERSION_FILE"
+  # from cli args
   if [[ $1 =~ ^@ ]]; then
     # from @<VERSION> string
     VERSION=$1; VERSION=${VERSION:1}; SOURCE="from command line";
@@ -54,8 +57,6 @@ _rb_activate () {
     [[ ! $1 =~ ^\/ ]] && file="$PWD/$file"
     set_file_version "$file"
   fi
-  # from pwd search .ruby-version, if present
-  [ -z "$VERSION" ] && search_pwd_and_parents_for && set_file_version "$VERSION_FILE"
   # from $RB_HOME_DIR/.ruby-version, if present
   [ -z "$VERSION" ] && set_file_version "$RB_HOME_DIR/$RB_VERSION_FILE"
   # default to the system version
@@ -63,7 +64,7 @@ _rb_activate () {
 
   # apply the requested version, if needed
 
-  if [ "$SOURCE" != "$RB_RUBY_SOURCE" ] || [ "$VERSION" != "$RB_RUBY_VERSION" ]; then
+  if [ "$VERSION" != "$RB_RUBY_VERSION" ] || [ "$SOURCE" != "$RB_RUBY_SOURCE" ]; then
     if [[ "$VERSION" == "system" ]]; then
       # system version requested, activate it
       _rb_unset_env && set_state "$VERSION" "$SOURCE" && MSG="Activated (system) `ruby -v`"
@@ -92,6 +93,7 @@ rb () {
     if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then echo "$RB_RELEASE"
     elif [ "$1" = "-h" ] || [ "$1" = "--help" ];  then eval "rb help"
     elif [ "$1" = "-f" ]; then reset $2
+    elif [ "$1" = "@"  ]; then reset
     elif [[ $1 =~ ^@ ]];  then reset $@
     elif [ -z $1 ];       then eval "rb status"
     else echo "rb: no such command \`$cmd_arg'" >&2
