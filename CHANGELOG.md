@@ -1,3 +1,12 @@
+## 1.0.0.rc2 / 2013-03-08
+
+* handling reworks (#33)
+ * only output status info if both the version and source are not empty
+ * have rb print the status if no args are given
+ * move global .ruby-version file to `"$RB_HOME_DIR"`
+ * fix for a bug in looking up the parent .ruby-version file
+ * rework handling when a command line version is specified
+
 ## 1.0.0.rc1 / 2013-03-04
 
 * quiet mode - added a `--quiet` flag to the init command (#32)
