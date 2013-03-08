@@ -90,6 +90,8 @@ $ rb -f /a/path/to/.ruby-version
 $ ruby -v # will use ree-1.8.7-2012.02
 ```
 
+**Note**: You can specify a "default" version file at `$HOME/.rb/.ruby-version`.  This version will be used when no other .ruby-version can be found and no command line version has been specified.
+
 **Note**: If an `@<version>` parameter is given, it will always override any versions specified in `.ruby-version` files.
 
 ### Pow
