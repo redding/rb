@@ -28,7 +28,8 @@ _rb_activate () {
   search_pwd_and_parents_for () {
     path="$PWD" path_slashes=${PWD//[^\/]/} num_path_dirs="${#path_slashes}"
     for (( n=${num_path_dirs}; n>0; --n )) do
-      test -e "$path/$RB_VERSION_FILE" && VERSION_FILE="$PWD/$RB_VERSION_FILE" && return
+      test -e "$path/$RB_VERSION_FILE" && ORIG_OLDPWD="$OLDPWD" && pushd "$path" > /dev/null &&
+        VERSION_FILE="$PWD/$RB_VERSION_FILE" && popd > /dev/null && OLDPWD="$ORIG_OLDPWD" && return
       path="$path/.."
     done
   }
