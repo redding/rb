@@ -1,3 +1,7 @@
+## 1.0.1 / 2013-08-29
+
+* simpler `--auto` implementation (#35)
+
 ## 1.0.0 / 2013-08-29
 
 * 1.0 release - no changes from 1.0.0.rc2

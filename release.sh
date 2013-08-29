@@ -1,6 +1,6 @@
 #!/bin/sh
 
-RB_RELEASE='1.0.0'
+RB_RELEASE='1.0.1'
 
 # check uncommitted changes
 
