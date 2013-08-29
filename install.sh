@@ -3,7 +3,7 @@
 set -e
 
 RB_HOME_DIR="$HOME/.rb"
-RB_RELEASE="1.0.0.rc2"
+RB_RELEASE="1.0.0"
 
 # make sure the bin path is in place
 
@@ -11,7 +11,7 @@ RB_RELEASE="1.0.0.rc2"
       BIN_PATH="$PREFIX/bin"
       mkdir -p "$BIN_PATH"
 
-# download the release tab and link to the bin path
+# download the release tag and link to the bin path
 
       rm -rf "$RB_HOME_DIR" && mkdir -p "$RB_HOME_DIR"
       pushd "$RB_HOME_DIR" > /dev/null &&

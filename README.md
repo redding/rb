@@ -99,7 +99,7 @@ $ ruby -v # will use ree-1.8.7-2012.02
 Add a `.ruby-version` file to your project, as well as a `.powrc` file containing the following line (this will make Pow start up your project using the install in the version file):
 
 ```bash
-source `which rb`
+source `which rb` && rb @
 ```
 
 ## Uninstall
