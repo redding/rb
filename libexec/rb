@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export RB_RELEASE="1.0.0.rc2"
+export RB_RELEASE="1.0.0"
 
 [ -n "$RB_HOME_DIR"     ] || export RB_HOME_DIR="$HOME/.rb"
 [ -n "$RB_RUBIES_DIR"   ] || export RB_RUBIES_DIR="$HOME/.rubies"
