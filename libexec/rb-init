@@ -6,7 +6,7 @@ if command -v complete >/dev/null 2>&1; then
     if [ -d "$RB_RUBIES_DIR" ]; then
       cur="\${COMP_WORDS[COMP_CWORD]}"
       versions=\$(\\ls -1 $RB_RUBIES_DIR | sed -e "s/^/@/")
-      cmds=\$(\\ls -1 `which rb`/.. | grep rb-  | sed -e "s/^rb-//" | sed -e "s/*$//")
+      cmds=\$(\\ls -1 $(dirname $(readlink `which rb`)) | grep rb- | sed -e "s/^rb-//" | sed -e "s/*$//")
 
       if [[ \$COMP_CWORD == 1 ]]; then
         COMPREPLY=( \$(compgen -W "\${cmds} \${versions} @system --version -f" -- \${cur}) )
