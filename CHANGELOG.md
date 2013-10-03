@@ -1,3 +1,7 @@
+## 1.0.2 / 2013-10-03
+
+* Use `dirname` for getting rb's install directory (#36)
+
 ## 1.0.1 / 2013-08-29
 
 * simpler `--auto` implementation (#35)
