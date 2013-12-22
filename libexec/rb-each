@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+for arg in $@; do
+  shift
+  if [[ "$arg" == "--" ]]; then
+    break
+  fi
+done
+
+if [[ $# -eq 0 ]]; then
+  echo "rb: each needs a command to run" >&2
+  exit 1
+fi
+
+CMD="$*"
+
+for v in `/bin/ls $RB_RUBIES_DIR`; do
+  shift
+
+  [[ ! "$RB_QUIET_MODE" == "true" ]] && echo -e "===[$v]===================================================================" >&2;
+  rb exec "@$v" -- "$CMD"
+done

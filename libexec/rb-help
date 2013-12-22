@@ -9,6 +9,7 @@ if [ -z $command ]; then
 usage: rb @[<version>]
        rb -f FILE
        rb exec [@<version>] [-f FILE] -- COMMAND
+       rb each -- COMMAND
        rb help [CMD]
        rb status
        rb list
@@ -30,6 +31,15 @@ Execute a command using a specific ruby version
 usage: rb exec -- COMMAND
        rb exec @<version> -- COMMAND
        rb exec -f FILE -- COMMAND
+USAGE
+    exit 0
+
+  elif [[ "$command" == "each" ]]; then
+
+    cat <<USAGE
+Execute (rb exec) a command across all installed ruby versions
+
+usage: rb each -- COMMAND
 USAGE
     exit 0
 
