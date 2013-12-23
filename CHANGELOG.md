@@ -1,3 +1,7 @@
+## 1.0.3 / 2013-12-23
+
+* `rb each` command for running a command across all installed rubies (#39)
+
 ## 1.0.2 / 2013-10-03
 
 * Use `dirname` for getting rb's install directory (#36)
