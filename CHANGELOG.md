@@ -1,3 +1,8 @@
+## 1.0.4 / 2014-03-21
+
+* create `~/.rubies` rubie dir on install (#41)
+* switch to finding default `.ruby-version` file in the rubies dir (#40)
+
 ## 1.0.3 / 2013-12-23
 
 * `rb each` command for running a command across all installed rubies (#39)
