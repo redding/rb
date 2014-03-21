@@ -3,6 +3,7 @@
 set -e
 
 RB_HOME_DIR="$HOME/.rb"
+RB_RUBIES_DIR="$HOME/.rubies"
 RB_RELEASE="1.0.3"
 
 # make sure the bin path is in place
@@ -23,6 +24,10 @@ RB_RELEASE="1.0.3"
 # install in the bin path
 
       ln -sf "$RB_HOME_DIR/libexec/rb" "$BIN_PATH"
+
+# make the rubies dir
+
+      mkdir -p "$RB_RUBIES_DIR"
 
 # done!
 
