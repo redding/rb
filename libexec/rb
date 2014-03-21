@@ -57,8 +57,8 @@ _rb_activate () {
     [[ ! $1 =~ ^\/ ]] && file="$PWD/$file"
     set_file_version "$file"
   fi
-  # from $RB_HOME_DIR/.ruby-version, if present
-  [ -z "$VERSION" ] && set_file_version "$RB_HOME_DIR/$RB_VERSION_FILE"
+  # from $RB_RUBIES_DIR/.ruby-version, if present
+  [ -z "$VERSION" ] && set_file_version "$RB_RUBIES_DIR/$RB_VERSION_FILE"
   # default to the system version
   [ -z "$VERSION" ] && VERSION="system" && SOURCE="default"
 
