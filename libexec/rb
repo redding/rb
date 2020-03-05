@@ -75,7 +75,7 @@ _rb_activate () {
       return 1
     else
       # an installed version requested, activate it
-      _rb_unset_env && set_state "$VERSION" "$SOURCE" && set_env && MSG="Activated $VERSION"
+      _rb_unset_env && set_state "$VERSION" "$SOURCE" && set_env && MSG="Activated Ruby-$VERSION"
     fi
     [[ ! "$RB_QUIET_MODE" == "true" ]] && info "$MSG ($SOURCE)"
   fi
