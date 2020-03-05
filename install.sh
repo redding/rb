@@ -14,10 +14,11 @@ RB_RELEASE="1.0.4"
 
 # download the release tag and link to the bin path
 
-      rm -rf "$RB_HOME_DIR" && mkdir -p "$RB_HOME_DIR"
+      mkdir -p "$RB_HOME_DIR"
       pushd "$RB_HOME_DIR" > /dev/null &&
-        curl -L "https://github.com/redding/rb/tarball/$RB_RELEASE" | tar xzf - */libexec/*
-        mv *rb-* "rb-$RB_RELEASE"
+        rm -rf "rb-$RB_RELEASE"
+        curl -L "https://github.com/redding/rb/tarball/$RB_RELEASE" | tar xzf - "*/libexec/*"
+        mv *-rb-* "rb-$RB_RELEASE"
         ln -sf "rb-$RB_RELEASE/libexec"
       popd > /dev/null
 
