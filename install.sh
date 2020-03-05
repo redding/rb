@@ -4,7 +4,7 @@ set -e
 
 RB_HOME_DIR="$HOME/.rb"
 RB_RUBIES_DIR="$HOME/.rubies"
-RB_RELEASE="1.0.4"
+RB_RELEASE="1.0.5-test1"
 
 # make sure the bin path is in place
 

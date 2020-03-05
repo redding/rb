@@ -1,13 +1,13 @@
 # rb
 
+Switch between installed Ruby versions.
+
 ```
 $ rb @1.9.3 && ruby -v                           # activate '1.9.3' install
 $ echo 'ree' > ./.ruby-version && rb && ruby -v  # activate current `.ruby-version` ('ree') install
 $ rb @system && ruby -v                          # activate system install
 $ rb help
 ```
-
-Switch between installed Ruby versions.
 
 ## What It Does...
 
