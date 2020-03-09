@@ -1,3 +1,11 @@
+## 1.0.5 / 2020-03-09
+
+* updates inspired by working on Chpg #44
+  - qualify that Rb is activating a Ruby version when activating
+  - properly export the PROMPT_COMMAND env variable in auto mode
+  - make the install and release scripts more robust
+  - tweak the REAME
+
 ## 1.0.4 / 2014-03-21
 
 * create `~/.rubies` rubie dir on install (#41)
