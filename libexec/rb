@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export RB_RELEASE="1.0.4"
+export RB_RELEASE="1.0.5-test1"
 
 [ -n "$RB_HOME_DIR"     ] || export RB_HOME_DIR="$HOME/.rb"
 [ -n "$RB_RUBIES_DIR"   ] || export RB_RUBIES_DIR="$HOME/.rubies"
@@ -75,7 +75,7 @@ _rb_activate () {
       return 1
     else
       # an installed version requested, activate it
-      _rb_unset_env && set_state "$VERSION" "$SOURCE" && set_env && MSG="Activated $VERSION"
+      _rb_unset_env && set_state "$VERSION" "$SOURCE" && set_env && MSG="Activated Ruby-$VERSION"
     fi
     [[ ! "$RB_QUIET_MODE" == "true" ]] && info "$MSG ($SOURCE)"
   fi
