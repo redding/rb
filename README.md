@@ -32,8 +32,10 @@ Each installed version of ruby should live in `$HOME/.rubies/`.  Install version
 
 Open a terminal and run this command ([view source](http://git.io/rb--install)):
 
+(change PREFIX as needed; it defaults to `/usr/local`)
+
 ```
-$ curl -L http://git.io/rb--install | sh
+$ curl -L http://git.io/rb--install | PREFIX=/user/local sh
 ```
 
 ### Init
