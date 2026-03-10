@@ -1,3 +1,7 @@
+## 1.0.7 / 2026-03-10
+
+* Ensure clean exit code when sourced; the source guard's false test no longer propagates exit code 1
+
 ## 1.0.6 / 2026-03-10
 
 * Guard the tail call (`rb $@`) so sourcing the file doesn't trigger execution; fixes hangs in non-interactive shells
