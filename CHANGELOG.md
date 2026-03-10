@@ -1,3 +1,7 @@
+## 1.0.6 / 2026-03-10
+
+* Guard the tail call (`rb $@`) so sourcing the file doesn't trigger execution; fixes hangs in non-interactive shells
+
 ## 1.0.5 / 2020-03-09
 
 * updates inspired by working on Chpg #44
