@@ -30,6 +30,10 @@ RB_RELEASE="1.0.7"
 
       mkdir -p "$RB_RUBIES_DIR"
 
+# generate shims for any installed rubies (safe if none yet)
+
+      "$RB_HOME_DIR/libexec/rb-reshim" || true
+
 # done!
 
       echo "Installed at ${BIN_PATH}/rb"
