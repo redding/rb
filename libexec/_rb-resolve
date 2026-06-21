@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+# Shared resolver for rb shims and `rb exec`. Sourced, never executed
+# directly. Self-sufficient: does not require `libexec/rb` to be sourced.
+
+: "${RB_HOME_DIR:=$HOME/.rb}"
+: "${RB_RUBIES_DIR:=$HOME/.rubies}"
+: "${RB_VERSION_FILE:=.ruby-version}"
+
+# Resolve the version + source for the current $PWD (and optional CLI arg
+# mirroring `_rb_activate`: `@<version>` or a version FILE path). Sets
+# globals RB_RESOLVED_VERSION and RB_RESOLVED_SOURCE.
+_rb_resolve_version () {
+  local arg="$1" version="" source="" path
+
+  # search pwd + parents for a .ruby-version file
+  path="$PWD"
+  while [ -n "$path" ]; do
+    if [ -f "$path/$RB_VERSION_FILE" ]; then
+      read -r version < "$path/$RB_VERSION_FILE"
+      version="${version//[[:space:]]/}"
+      source="from $path/$RB_VERSION_FILE"
+      break
+    fi
+    [ "$path" = "/" ] && break
+    path="${path%/*}"; [ -z "$path" ] && path="/"
+  done
+
+  # CLI override: @<version> or a version FILE
+  if [[ "$arg" == @* ]]; then
+    version="${arg:1}"; source="from command line"
+  elif [ -n "$arg" ] && [ -f "$arg" ]; then
+    read -r version < "$arg"
+    version="${version//[[:space:]]/}"; source="from $arg"
+  fi
+
+  # default file, then "system"
+  if [ -z "$version" ] && [ -f "$RB_RUBIES_DIR/$RB_VERSION_FILE" ]; then
+    read -r version < "$RB_RUBIES_DIR/$RB_VERSION_FILE"
+    version="${version//[[:space:]]/}"
+    source="from $RB_RUBIES_DIR/$RB_VERSION_FILE"
+  fi
+  [ -z "$version" ] && { version="system"; source="default"; }
+
+  RB_RESOLVED_VERSION="$version"
+  RB_RESOLVED_SOURCE="$source"
+}
+
+# Echo the on-disk root for a version (resolving a symlinked dir).
+_rb_resolved_root () {
+  local v="$1" dv="$RB_RUBIES_DIR/$1"
+  [ -h "$dv" ] && v="$(readlink -n "$dv" | sed 's:/$::')"
+  printf '%s' "$RB_RUBIES_DIR/$v"
+}
+
+# Export the full env for a resolved (non-system) version and prepend its
+# bin dirs to PATH. Mirrors `set_env` in libexec/rb exactly.
+_rb_apply_env () {
+  local v="$RB_RESOLVED_VERSION" dv="$RB_RUBIES_DIR/$RB_RESOLVED_VERSION"
+  [ -h "$dv" ] && v="$(readlink -n "$dv" | sed 's:/$::')"
+  export RUBY_VERSION="$v" RUBY_ROOT="$RB_RUBIES_DIR/$v"
+  export GEM_HOME="$RUBY_ROOT/lib/ruby/gems" GEM_PATH="$RUBY_ROOT/lib/ruby/gems"
+  export PATH="$RUBY_ROOT/bin:$RUBY_ROOT/lib/ruby/gems/bin:$PATH"
+}
+
+# Echo $PATH with the rb shims dir removed (used for fallback search so a
+# shim never recurses into itself).
+_rb_path_without_shims () {
+  printf '%s' "$PATH" \
+    | awk -v RS=: -v ORS=: -v d="$RB_HOME_DIR/shims" '$0 != d' \
+    | sed 's/:$//'
+}
+
+# Print the rbenv-style "exists in these versions" hint to stderr.
+_rb_not_found_hint () {
+  local program="$1" vdir v found=()
+  for vdir in "$RB_RUBIES_DIR"/*/; do
+    [ -d "$vdir" ] || continue
+    v="$(basename "$vdir")"
+    if [ -x "$vdir/bin/$program" ] || [ -x "$vdir/lib/ruby/gems/bin/$program" ]; then
+      found+=("$v")
+    fi
+  done
+  if [ "${#found[@]}" -gt 0 ]; then
+    echo "" >&2
+    echo "The \`$program' command exists in these Ruby versions:" >&2
+    printf '  %s\n' "${found[@]}" >&2
+  fi
+}

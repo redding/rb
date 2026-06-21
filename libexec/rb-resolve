@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "${BASH_SOURCE[0]}")/_rb-resolve"
+_rb_resolve_version
+echo "$RB_RESOLVED_VERSION ($RB_RESOLVED_SOURCE)"
