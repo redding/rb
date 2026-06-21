@@ -28,6 +28,12 @@ $ rb help
 
 Each installed version of ruby should live in `$HOME/.rubies/`.  Install versions any way you prefer; [ruby-build](https://github.com/sstephenson/ruby-build) is recommended.
 
+## Shims
+
+`rb` installs lightweight **shims** (in `$HOME/.rb/shims`, added to your `PATH` by `rb init`) for every executable across your installed rubies. A shim resolves the correct version from the nearest `.ruby-version` at **run time**, so bare commands — `ruby`, `bundle`, `rspec`, `rails`, … — use the right version in any shell, including non-interactive ones (scripts, cron, AI agents) where prompt-based auto-activation never runs. No `rb @` prefix required.
+
+Regenerate shims with `rb reshim`. This runs automatically after `gem install`/`bundle install` (and similar), and on install. Run it manually after installing a new ruby. Use `rb which COMMAND` to see the real path a command resolves to, and `rb resolve` to see the version that applies in the current directory.
+
 ## Install
 
 Open a terminal and run this command ([view source](https://raw.githubusercontent.com/redding/rb/main/install.sh)):
