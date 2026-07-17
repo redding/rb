@@ -10,6 +10,9 @@ usage: rb @[<version>]
        rb -f FILE
        rb exec [@<version>] [-f FILE] -- COMMAND
        rb each -- COMMAND
+       rb reshim
+       rb which COMMAND
+       rb resolve
        rb help [CMD]
        rb status
        rb list
@@ -40,6 +43,33 @@ USAGE
 Execute (rb exec) a command across all installed ruby versions
 
 usage: rb each -- COMMAND
+USAGE
+    exit 0
+
+  elif [[ "$command" == "reshim" ]]; then
+
+    cat <<USAGE
+Regenerate shims for all installed ruby versions (bin + gem bin).
+
+usage: rb reshim
+USAGE
+    exit 0
+
+  elif [[ "$command" == "which" ]]; then
+
+    cat <<USAGE
+Print the real path the given command resolves to in the current dir.
+
+usage: rb which COMMAND
+USAGE
+    exit 0
+
+  elif [[ "$command" == "resolve" ]]; then
+
+    cat <<USAGE
+Print the ruby version + source that applies in the current dir.
+
+usage: rb resolve
 USAGE
     exit 0
 

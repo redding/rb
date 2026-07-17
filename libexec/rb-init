@@ -56,6 +56,10 @@ AUTO_MODE
   fi
 done
 
+cat <<SHIMS_PATH
+export PATH="$RB_HOME_DIR/shims:\$PATH"
+SHIMS_PATH
+
 cat <<SOURCE_RB
 source `which rb`
 SOURCE_RB

@@ -1,3 +1,13 @@
+## 1.1.0 / 2026-07-16
+
+* Shims: resolve the correct Ruby for bare commands (`ruby`, `bundle`,
+  `rspec`, …) in any shell, including non-interactive ones, with no
+  `rb @` prefix. New `rb reshim`, `rb which`, `rb resolve` commands;
+  `rb init` adds the shims dir to `PATH`; auto-reshim after gem/bundle
+  installs.
+* `rb exec` no longer spawns a login/interactive subshell.
+* docs: fix dead `git.io` install URLs and typos
+
 ## 1.0.7 / 2026-03-10
 
 * Ensure clean exit code when sourced; the source guard's false test no longer propagates exit code 1

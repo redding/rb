@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -e
+[ -n "$RB_DEBUG" ] && set -x
+
+source "$(dirname "${BASH_SOURCE[0]}")/_rb-resolve"
+
+program="${1:?rb-shim-exec: a program name is required}"; shift
+
+# resolve from cwd (shims pass no @version/-f)
+_rb_resolve_version
+
+target=""
+if [ "$RB_RESOLVED_VERSION" != "system" ] \
+    && [ -d "$(_rb_resolved_root "$RB_RESOLVED_VERSION")" ]; then
+  _rb_apply_env
+  for cand in "$RUBY_ROOT/bin/$program" "$RUBY_ROOT/lib/ruby/gems/bin/$program"; do
+    [ -x "$cand" ] && { target="$cand"; break; }
+  done
+fi
+
+# fallback: search PATH minus the shims dir (Homebrew, /usr/bin, ...)
+if [ -z "$target" ]; then
+  target="$(PATH="$(_rb_path_without_shims)" command -v "$program" 2>/dev/null || true)"
+fi
+
+if [ -z "$target" ]; then
+  echo "rb: $program: command not found" >&2
+  _rb_not_found_hint "$program"
+  exit 127
+fi
+
+# auto-reshim after gem/bundle install-type commands (can't exec -- reshim
+# must run after the install completes)
+reshim_after=""
+case "$program" in
+  gem)    case "$1" in install|update|uninstall|pristine|cleanup) reshim_after=1 ;; esac ;;
+  bundle) case "$1" in install|update|add|remove)                 reshim_after=1 ;; esac ;;
+esac
+
+if [ -n "$reshim_after" ]; then
+  "$target" "$@"; status=$?
+  "$RB_HOME_DIR/libexec/rb-reshim" >/dev/null 2>&1 || true
+  exit "$status"
+fi
+
+exec "$target" "$@"

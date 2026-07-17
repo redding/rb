@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "${BASH_SOURCE[0]}")/_rb-resolve"
+
+program="${1:?usage: rb which COMMAND}"
+_rb_resolve_version
+
+if [ "$RB_RESOLVED_VERSION" != "system" ]; then
+  root="$(_rb_resolved_root "$RB_RESOLVED_VERSION")"
+  for cand in "$root/bin/$program" "$root/lib/ruby/gems/bin/$program"; do
+    [ -x "$cand" ] && { echo "$cand"; exit 0; }
+  done
+fi
+
+target="$(PATH="$(_rb_path_without_shims)" command -v "$program" 2>/dev/null || true)"
+[ -n "$target" ] && { echo "$target"; exit 0; }
+
+echo "rb: $program: command not found" >&2
+_rb_not_found_hint "$program"
+exit 127

@@ -1,19 +1,30 @@
 #!/usr/bin/env bash
+set -e
+source "$(dirname "${BASH_SOURCE[0]}")/_rb-resolve"
 
+# argv before `--` selects the version (@<version> or -f FILE); the rest
+# is the command to run.
 argv=()
-
-for arg in $@; do
-  shift
-  if [[ "$arg" == "--" ]]; then
-    break
-  else
-    argv+=($arg)
-  fi
+while [ $# -gt 0 ]; do
+  a="$1"; shift
+  [ "$a" = "--" ] && break
+  argv+=("$a")
 done
 
-if [[ $# -eq 0 ]]; then
+if [ $# -eq 0 ]; then
   echo "rb: exec needs a command to run" >&2
   exit 1
 fi
 
-exec $SHELL -l -i -c "_rb_activate $argv && $*"
+# mirror `_rb_activate` arg handling: `-f FILE` passes FILE; `@ver` passes
+# the version string; otherwise resolve from cwd.
+sel=""
+case "${argv[0]:-}" in
+  -f) sel="${argv[1]:-}" ;;
+  *)  sel="${argv[0]:-}" ;;
+esac
+
+_rb_resolve_version "$sel"
+[ "$RB_RESOLVED_VERSION" != "system" ] && _rb_apply_env
+
+exec "$SHELL" -c "$*"

@@ -4,7 +4,7 @@ set -e
 
 RB_HOME_DIR="$HOME/.rb"
 RB_RUBIES_DIR="$HOME/.rubies"
-RB_RELEASE="1.0.7"
+RB_RELEASE="1.1.0"
 
 # make sure the bin path is in place
 
@@ -29,6 +29,10 @@ RB_RELEASE="1.0.7"
 # make the rubies dir
 
       mkdir -p "$RB_RUBIES_DIR"
+
+# generate shims for any installed rubies (safe if none yet)
+
+      "$RB_HOME_DIR/libexec/rb-reshim" || true
 
 # done!
 

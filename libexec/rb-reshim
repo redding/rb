@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -e
+
+: "${RB_HOME_DIR:=$HOME/.rb}"
+: "${RB_RUBIES_DIR:=$HOME/.rubies}"
+
+shims="$RB_HOME_DIR/shims"
+shim_exec="$RB_HOME_DIR/libexec/rb-shim-exec"
+mkdir -p "$shims"
+
+# union of executable basenames across all installed rubies
+names="$(
+  for vdir in "$RB_RUBIES_DIR"/*/; do
+    for bindir in "$vdir/bin" "$vdir/lib/ruby/gems/bin"; do
+      [ -d "$bindir" ] || continue
+      for f in "$bindir"/*; do
+        [ -f "$f" ] && [ -x "$f" ] && basename "$f"
+      done
+    done
+  done | sort -u
+)"
+
+# write/refresh a dispatch shim per name
+for name in $names; do
+  cat > "$shims/$name" <<SHIM
+#!/usr/bin/env bash
+set -e
+exec "$shim_exec" "$name" "\$@"
+SHIM
+  chmod +x "$shims/$name"
+done
+
+# prune stale shims no longer backed by any version
+for shim in "$shims"/*; do
+  [ -e "$shim" ] || continue
+  name="$(basename "$shim")"
+  printf '%s\n' $names | grep -qx "$name" || rm -f "$shim"
+done
+
+echo "rb: reshimmed $(printf '%s\n' $names | grep -c .) commands into $shims"

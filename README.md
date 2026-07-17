@@ -28,14 +28,20 @@ $ rb help
 
 Each installed version of ruby should live in `$HOME/.rubies/`.  Install versions any way you prefer; [ruby-build](https://github.com/sstephenson/ruby-build) is recommended.
 
+## Shims
+
+`rb` installs lightweight **shims** (in `$HOME/.rb/shims`, added to your `PATH` by `rb init`) for every executable across your installed rubies. A shim resolves the correct version from the nearest `.ruby-version` at **run time**, so bare commands — `ruby`, `bundle`, `rspec`, `rails`, … — use the right version in any shell, including non-interactive ones (scripts, cron, AI agents) where prompt-based auto-activation never runs. No `rb @` prefix required.
+
+Regenerate shims with `rb reshim`. This runs automatically after `gem install`/`bundle install` (and similar), and on install. Run it manually after installing a new ruby. Use `rb which COMMAND` to see the real path a command resolves to, and `rb resolve` to see the version that applies in the current directory.
+
 ## Install
 
-Open a terminal and run this command ([view source](http://git.io/rb--install)):
+Open a terminal and run this command ([view source](https://raw.githubusercontent.com/redding/rb/main/install.sh)):
 
 (change PREFIX as needed; it defaults to `/usr/local`)
 
 ```
-$ curl -L http://git.io/rb--install | PREFIX=/user/local sh
+$ curl -L https://raw.githubusercontent.com/redding/rb/main/install.sh | PREFIX=/usr/local sh
 ```
 
 ### Init
@@ -48,7 +54,7 @@ eval "$(rb init)"
 
 ### Auto Mode
 
-(optional) If you want automatic handling, add the `--auto` flag to the init.  In additon to the normal init above, `$PROMPT_COMMAND` is updated to activate any new ruby version as you change directories.  **Again, this is optional.**
+(optional) If you want automatic handling, add the `--auto` flag to the init.  In addition to the normal init above, `$PROMPT_COMMAND` is updated to activate any new ruby version as you change directories.  **Again, this is optional.**
 
 ```bash
 eval "$(rb init --auto)"
@@ -76,7 +82,7 @@ $ rb @system
 
 ### `.ruby-version` Files
 
-If no explicit @<verion> parameter is specified, rb will look for the version in a file named `.ruby-version` in your current directory, its parent directories, or your home directory.  The `.ruby-version` files are expected to contain nothing but the version requested.
+If no explicit @<version> parameter is specified, rb will look for the version in a file named `.ruby-version` in your current directory, its parent directories, or your home directory.  The `.ruby-version` files are expected to contain nothing but the version requested.
 
 ```
 $ echo "1.9.3-p0" > $HOME/.ruby-version
@@ -106,10 +112,10 @@ source `which rb` && rb @
 
 ## Uninstall
 
-Open a terminal and run this command ([view source](http://git.io/rb--uninstall)):
+Open a terminal and run this command ([view source](https://raw.githubusercontent.com/redding/rb/main/uninstall.sh)):
 
 ```
-$ curl -L http://git.io/rb--uninstall | sh
+$ curl -L https://raw.githubusercontent.com/redding/rb/main/uninstall.sh | sh
 ```
 
 ## Contributing
