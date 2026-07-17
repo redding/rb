@@ -5,7 +5,7 @@ RB_HOME_DIR="$HOME/.rb"
 
 # remove the bin
 
-      [ -n "$PREFIX" ] || PREFIX="/usr/local"
+      [ -n "$PREFIX" ] || PREFIX="$HOME/.local"
       BIN_PATH="$PREFIX/bin"
       rm -f "$BIN_PATH/rb" > /dev/null
 

@@ -8,7 +8,7 @@ RB_RELEASE="1.1.0"
 
 # make sure the bin path is in place
 
-      [ -n "$PREFIX" ] || PREFIX="/usr/local"
+      [ -n "$PREFIX" ] || PREFIX="$HOME/.local"
       BIN_PATH="$PREFIX/bin"
       mkdir -p "$BIN_PATH"
 

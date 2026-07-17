@@ -38,10 +38,10 @@ Regenerate shims with `rb reshim`. This runs automatically after `gem install`/`
 
 Open a terminal and run this command ([view source](https://raw.githubusercontent.com/redding/rb/main/install.sh)):
 
-(change PREFIX as needed; it defaults to `/usr/local`)
+(installs to `$HOME/.local/bin`; set `PREFIX` to override, e.g. `PREFIX=/usr/local`)
 
 ```
-$ curl -L https://raw.githubusercontent.com/redding/rb/main/install.sh | PREFIX=/usr/local sh
+$ curl -L https://raw.githubusercontent.com/redding/rb/main/install.sh | sh
 ```
 
 ### Init
